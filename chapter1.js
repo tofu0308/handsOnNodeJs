@@ -55,3 +55,30 @@ console.log(obj3)
 const obj4 = {propB: 'b', propD: 'd'}
 const obj5 ={ ...obj2, [obj4.propB + obj2.propC]: 'abc', ...obj4, propA:true}
 console.log(obj5)
+
+console.log(Object.keys(obj2))
+console.log(Object.values(obj2))
+console.log(Object.entries(obj2))
+
+const price = {
+  value: 100,
+  get withTax() {
+    return Math.floor(this.value * 1.1)
+  },
+  set withTax(withTax) {
+    this.value = Math.ceil(withTax / 1.1)
+  }
+}
+
+/*
+undefined
+> price.withTax
+110
+> price.withTax = 333
+333
+> price.withTax
+333
+> price.value
+303
+*/
+
