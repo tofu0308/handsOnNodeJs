@@ -51,3 +51,7 @@ console.log(obj2)
 const {propA, ...obj3} = obj2
 console.log(obj2)
 console.log(obj3)
+
+const obj4 = {propB: 'b', propD: 'd'}
+const obj5 ={ ...obj2, [obj4.propB + obj2.propC]: 'abc', ...obj4, propA:true}
+console.log(obj5)
