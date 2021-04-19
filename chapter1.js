@@ -82,3 +82,77 @@ undefined
 303
 */
 
+// 配列
+const arr1 =['foo', 'bar']
+
+console.log(
+  arr1.length,
+  arr1[1],
+  arr1.indexOf('bar'),
+  arr1.indexOf('hoge'),
+  arr1.includes('bar'),
+  arr1.includes('hoge'),
+  arr1.join('-'),
+  arr1.join()
+)
+console.log(
+  arr1.push('baz'),
+  arr1,
+  arr1.push('a', 'b', 'c'),
+  arr1,
+  arr1.pop(),
+  arr1,
+  arr1.unshift('qux'),
+  arr1,
+  arr1.unshift('d', 'e', 'f'),
+  arr1,
+  arr1.shift(),
+  arr1
+)
+
+const arr2 = ['foo', 'bar', 'baz']
+const arr3 = ['a', ...arr2, 'b', 'c']
+console.log(
+  arr2, // 元配列はそのまま
+  arr3
+ )
+
+ const [head1, head2, ...arr4] = arr2
+ console.log(
+   arr4,
+   arr2
+ )
+
+ // const [...arr5, last] = arr2
+ // rest要素が配列の最後にないとエラーになる
+ // SyntaxError: Rest element must be last element
+
+ console.log(
+  arr2.slice(0, 2),
+  arr2.slice(0, -1),
+  arr2.slice(2),
+  arr2.slice(),
+  arr2 // もとの配列はそのまま
+ )
+
+ console.log(arr2)
+ console.log(
+  arr2.sort(),
+  arr2 // sortはもとの配列も変更する
+ )
+
+ console.log(arr3)
+ console.log(
+   arr3.sort((a,b) => a.length - b.length),
+   arr3
+ )
+
+for (let i =0; i < arr2.length; i++) {console.log(arr2[i])}
+for(const e of arr2){console.log(e)}
+
+arr2.forEach(console.log)
+arr2.map(e => console.log(e+e))
+console.log(
+  arr2.filter(e => e.startsWith('b')),
+  arr2.find(e => e.startsWith('b'))
+)
