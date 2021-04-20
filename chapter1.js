@@ -156,3 +156,89 @@ console.log(
   arr2.filter(e => e.startsWith('b')),
   arr2.find(e => e.startsWith('b'))
 )
+
+// クラス
+class Foo {
+  // privateフィールド
+  #privateField = 1
+
+  // publicフィールド
+  publicField = 2
+
+  // staticなprivateフィールド
+  static #staticPrivateField = 3
+
+  // staticなpublicフィールド
+  static staticPublicField = 4
+
+  constructor(parameter) {
+    this.FieldInitializedInConstructor = parameter
+    console.log('Foo constructor')
+  }
+
+  // privateなgetter
+  get #computed() {
+    return this.publicField * 2
+  }
+
+  // publicなgetter
+  get computed() {
+    return this.#computed
+  }
+
+  // privateなsetter
+  set #computed(value){
+    this.publicField = value / 2
+  }
+ 
+  // publicなsetter
+  set computed(value) {
+    this.#computed = value
+  }
+
+  // privateメソッド
+  #privateMethod() {
+    return this.#privateField
+  }
+
+  // publicメソッド
+  publicMethod() {
+    return this.#privateField
+  }
+
+ // staticなprivateメソッド
+ static #staticPrivateMethod() {
+  return this.#privateField
+ }
+
+ // staticなpublicメソッド
+ static staticPublicMetho() {
+   return this.#staticPrivateField
+ }
+}
+
+
+
+const  fooInstance = new Foo(100)
+
+// privateFieldにはアクセス出来ない
+// SyntaxError: Private field '#privateField' must be declared in an enclosing class
+// console.log(fooInstance.#privateField)
+
+console.log(fooInstance.publicField)
+console.log(fooInstance.FieldInitializedInConstructor)
+
+
+// privateなgetterにアクセスできない
+// SyntaxError: Private field '#computed' must be declared in an enclosing class
+// console.log(fooInstance.#computed)
+
+console.log(fooInstance.computed)
+
+// privateなsetterにアクセスできない
+// SyntaxError: Private field '#computed' must be declared in an enclosing class
+// fooInstance.#computed = 10
+
+fooInstance.computed = 10
+console.log(fooInstance.computed)
+console.log(fooInstance.publicField)
