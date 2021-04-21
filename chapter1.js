@@ -286,3 +286,41 @@ console.log(
   // TypeError: Cannot read private member #staticPrivateField from an object whose class did not declare it
   // Bar.staticPublicMethod()
 )
+
+// プロトタイプチェーン
+console.log(
+  Foo.prototype,
+  Object.getOwnPropertyNames(Foo.prototype),
+  Foo.prototype.publicMethod,
+  fooInstance.__proto__ === Foo.prototype
+  )
+
+const plainObject = {}
+console.log(
+  fooInstance instanceof Foo,
+  plainObject instanceof Foo,
+  plainObject.__proto__ = Foo.prototype, // ここで__proto__を書き換えてしまう
+  plainObject instanceof Foo
+)
+
+console.log(
+  barInstance instanceof Foo,
+  barInstance.__proto__ === Bar.prototype,
+  Object.getOwnPropertyNames(Bar.prototype),
+  barInstance.__proto__ === Foo.prototype
+)
+console.log(
+  barInstance.__proto__.__proto__,
+  Foo.prototype,
+  barInstance.__proto__.__proto__ === Foo.prototype 
+)
+
+console.log(
+  fooInstance.__proto__.__proto__,
+  Object.prototype,
+  fooInstance.__proto__.__proto__ === Object.prototype,
+  fooInstance instanceof Object,
+  barInstance.__proto__.__proto__.__proto__ === Object.prototype,
+  barInstance instanceof Object
+
+)
