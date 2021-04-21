@@ -212,7 +212,7 @@ class Foo {
  }
 
  // staticなpublicメソッド
- static staticPublicMetho() {
+ static staticPublicMethod() {
    return this.#staticPrivateField
  }
 }
@@ -242,3 +242,22 @@ console.log(fooInstance.computed)
 fooInstance.computed = 10
 console.log(fooInstance.computed)
 console.log(fooInstance.publicField)
+
+// privateメソッドにアクセスできない
+// SyntaxError: Private field '#privateMethod' must be declared in an enclosing class
+// fooInstance.#privateMethod
+
+console.log(fooInstance.publicMethod())
+
+// staticなprivateフィールドにアクセスできない
+// SyntaxError: Private field '#staticPrivateField' must be declared in an enclosing class
+// Foo.#staticPrivateField;
+
+console.log(Foo.staticPublicField)
+
+// staticなprivateメソッドにアクセスできない
+// SyntaxError: Private field '#staticPrivateMethod' must be declared in an enclosing class
+// Foo.#staticPrivateMethod()
+
+console.log(Foo.staticPublicMethod())
+
