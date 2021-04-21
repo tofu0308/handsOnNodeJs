@@ -261,3 +261,28 @@ console.log(Foo.staticPublicField)
 
 console.log(Foo.staticPublicMethod())
 
+
+// extends
+class Bar extends Foo {
+  constructor(parameter) {
+    super(parameter)
+    this.subClassPublicField = 100
+    console.log('Bar constructor')
+  }
+
+  publicMethod() {
+    return super.publicMethod() * this.subClassPublicField
+  }
+}
+
+const barInstance = new Bar(100)  
+console.log(
+  barInstance.publicField,
+  barInstance.subClassPublicField,
+  barInstance.publicMethod(),
+  Bar.staticPublicField,
+  
+  // 親クラスのstaticなprivateメソッドにはアクセスできるが、その中で親クラスのstaticなprivateフィールドにアクセ視しているためエラーになる
+  // TypeError: Cannot read private member #staticPrivateField from an object whose class did not declare it
+  // Bar.staticPublicMethod()
+)
