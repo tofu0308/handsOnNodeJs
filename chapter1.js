@@ -322,5 +322,16 @@ console.log(
   fooInstance instanceof Object,
   barInstance.__proto__.__proto__.__proto__ === Object.prototype,
   barInstance instanceof Object
-
 )
+
+// 等価性
+console.log(
+  0 === '', // false
+  0 == '', // true
+  1 === 1,
+  {foo: 1} === {foo: 1} // false　構造が同じだけで別々のオブジェクト
+)
+
+const obj8 = {foo : 1}
+const obj9 = obj8
+console.log(obj8 === obj9)
