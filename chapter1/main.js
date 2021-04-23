@@ -335,3 +335,21 @@ console.log(
 const obj8 = {foo : 1}
 const obj9 = obj8
 console.log(obj8 === obj9)
+
+
+// CommonJs
+math = require("./cjs-math") 
+
+console.log(
+  math.add(1,2),
+  math.subtract(1,2),
+)
+
+/*
+const module = {exports:{}}
+let exports = module.exports
+exports.foo = 'foo'
+exports = {bar: 'bar'}
+exports
+module.exports // module.exportsの値に影響しない
+*/
