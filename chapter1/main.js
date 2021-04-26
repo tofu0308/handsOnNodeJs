@@ -353,3 +353,18 @@ exports = {bar: 'bar'}
 exports
 module.exports // module.exportsの値に影響しない
 */
+
+
+// 練習問題１-２
+// 一週間の秒数
+console.log(7*24*60*60)
+
+// 練習問題１-３
+// 1から10までの積
+{
+  let total = 1;
+  for (let i = 1; i <= 10; i++) {
+    total = total * i
+    console.log(`${i}までの積:${total}`)
+  }
+}
