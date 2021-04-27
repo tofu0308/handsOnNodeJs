@@ -1,3 +1,5 @@
+const { fstat } = require("node:fs")
+
 // コールバックを利用した非同期APIを実行する
 setTimeout(
   () => {
@@ -16,3 +18,41 @@ const array2 = array1.map((element => {
   return element*10
 }))
 console.log('配列の変換完了', array2)
+
+// fs.readdir()
+fs.readdir(
+  '.',
+  (err, files) => {
+    console.log('fs.readdir実行結果')
+    console.log('err', err)
+    console.log('files', files)
+  }
+)
+/**
+undefined
+> fs.readdir実行結果
+err null
+files [ 'main.js' ]
+ */
+
+
+fs.readdir(
+  'foo', // 存在しないディレクトリの場合
+  (err, files) => {
+    console.log('fs.readdir実行結果')
+    console.log('err', err)
+    console.log('files', files)
+  }
+)
+
+/**
+ undefined
+> fs.readdir実行結果
+err [Error: ENOENT: no such file or directory, scandir 'foo'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'scandir',
+  path: 'foo'
+}
+files undefined
+ */
