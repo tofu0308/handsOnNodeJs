@@ -1,5 +1,3 @@
-const { fstat } = require("node:fs")
-
 // コールバックを利用した非同期APIを実行する
 setTimeout(
   () => {
@@ -56,3 +54,43 @@ err [Error: ENOENT: no such file or directory, scandir 'foo'] {
 }
 files undefined
  */
+
+// エラーハンドリング
+function parseJSONSync(json) {
+  try {
+    return JSON.parse(json)
+  } catch(err) {
+    console.error('エラーをキャッチ', err)
+  }
+}
+
+parseJSONSync("JSONではない")
+
+/**
+エラーをキャッチ SyntaxError: Unexpected token J in JSON at position 0
+    at JSON.parse (<anonymous>)
+    ...
+undefined
+> 
+*/
+// こっちは正しく動く 
+const json = JSON.parse('{ "message" : "hello", "to" : "world" }')
+parseJSONSync(JSON.stringify(json))
+
+
+function parseJSONAsync(json, callback) {
+  setTimeout(()=>{
+    try {
+      callback(null, JSON.parse(json))
+    } catch(err) {
+      callback(err)
+    }
+  },1000)
+}
+
+parseJSONAsync('不正なJSON', result => {
+  console.log('parse結果', result)
+})
+// > Uncaught SyntaxError: Unexpected token 不 in JSON at position 0
+
+
