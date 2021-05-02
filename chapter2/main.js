@@ -1,3 +1,6 @@
+const { set } = require("core-js/core/dict")
+const { result } = require("lodash")
+
 // コールバックを利用した非同期APIを実行する
 setTimeout(
   () => {
@@ -77,7 +80,6 @@ undefined
 const json = JSON.parse('{ "message" : "hello", "to" : "world" }')
 parseJSONSync(JSON.stringify(json))
 
-
 function parseJSONAsync(json, callback) {
   setTimeout(()=>{
     try {
@@ -92,5 +94,50 @@ parseJSONAsync('不正なJSON', result => {
   console.log('parse結果', result)
 })
 // > Uncaught SyntaxError: Unexpected token 不 in JSON at position 0
+
+
+/**
+ 2.2.3 混ぜるな危険、同期と非同期
+ */
+
+//  こちらはアンチパターン
+const cache = {}
+function parseJSONAsyncWithCache(json, callback) {
+  const cached = cache[json]
+  if(cached) {
+    callback(cached.err, cached.result)
+    return
+  }
+
+  parseJSONAsync(json, (err, result) => {
+    cache[json] = {err, result}
+    callback(err, result)
+  })
+}
+
+// 1回目の実行
+parseJSONAsyncWithCache(
+  '{ "message" : "hello", "to" : "world" }',
+  (err, result) => {
+    console.log('1回目の結果', err ,result)
+    
+    // コールバックの中で2回めを実行
+    parseJSONAsyncWithCache(
+      '{ "message" : "hello", "to" : "world" }',
+      (err, result) => {
+        console.log('1回目の結果', err ,result)    
+      }
+    )
+    console.log('2回目の呼び出し完了')
+  }
+)
+console.log('1回目の呼び出し完了')
+/**
+1回目の呼び出し完了
+undefined
+> 1回目の結果 null { message: 'hello', to: 'world' }
+1回目の結果 null { message: 'hello', to: 'world' }
+2回目の呼び出し完了
+ */
 
 
