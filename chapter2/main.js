@@ -180,3 +180,51 @@ undefined
 2回目の呼び出し完了
 2回目の結果 null { message: 'hello', to: 'world' }
  */
+
+// nextTickQeue
+const cache3 = {}
+function parseJSONAsyncWithCache3(json, callback) {
+  const cached = cache3[json]
+  if(cached) {
+    // Node.jsのみを対象としたコードの場合
+    process.nextTick(() => callback(cached.err, cached.result))
+    /**
+     ブラウザで動かす場合
+     1, queueMicroTask
+     queue.MicroTask(() => { callback(cached.err, cached.result) })
+
+     2, Promise
+     Promise.resolve().then() => {callback(cached.err, cached.result)}
+    */
+    return
+  }
+  parseJSONAsync(json, (err, result) => {
+    cache3[json] = {err, result}
+    callback(err, result)
+  })
+}
+
+// 1回目の実行
+parseJSONAsyncWithCache3(
+  '{ "message" : "hello", "to" : "world" }',
+  (err, result) => {
+    console.log('1回目の結果', err ,result)
+    
+    // コールバックの中で2回目を実行
+    parseJSONAsyncWithCache3(
+      '{ "message" : "hello", "to" : "world" }',
+      (err, result) => {
+        console.log('2回目の結果', err ,result)
+      }
+    )
+    console.log('2回目の呼び出し完了')
+  } 
+)
+console.log('1回目の呼び出し完了')
+/**
+  1回目の呼び出し完了
+  undefined
+  > 1回目の結果 null { message: 'hello', to: 'world' }
+  2回目の呼び出し完了
+  2回目の結果 null { message: 'hello', to: 'world' }
+ */
