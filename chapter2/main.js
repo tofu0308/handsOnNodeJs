@@ -1,5 +1,7 @@
+const { sync } = require("chownr")
 const { set } = require("core-js/core/dict")
 const { result } = require("lodash")
+const { setDefaultEncoding } = require("stdout-stream")
 
 // コールバックを利用した非同期APIを実行する
 setTimeout(
@@ -228,3 +230,40 @@ console.log('1回目の呼び出し完了')
   2回目の呼び出し完了
   2回目の結果 null { message: 'hello', to: 'world' }
  */
+
+// 2.2.4 コールバックヘル
+// コードの分割
+function first(arg, callback) {
+  asyncFunction1(arg, (err, result) => {
+    if(err) return callback(err)
+    second(result, callback)
+  })
+}
+
+function second(arg, callback) {
+  asyncFunction2(arg, (err, result) => {
+    if(err) return callback(err)
+    third(result, callback)
+  })
+}
+
+function third(arg, callback) {
+  asyncFunction3(arg, (err, result) => {
+    if(err) return callback(err)
+    asyncFunction4(result, callback)
+  })
+}
+
+first(input, (err, result) => {
+  if(err) retun // エラーハンドリング
+})
+
+try {
+  const result1 = syncFunc1(input)
+  const result2 = syncFunc1(reult1)
+  const result3 = syncFunc1(reult2)
+  const result4 = syncFunc1(reult3)
+  // ...
+} catch(err) {
+  // エラーハンドリング
+}
