@@ -267,3 +267,42 @@ try {
 } catch(err) {
   // エラーハンドリング
 }
+
+// 2.3 Promise
+// 2.3.1 Promiseインスタンスの生成と状態遷移
+function parseJSONAsync(json) {
+  // Promiseインスタンスを生成して返す（この時点ではPending状態）
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        // fulfilled状態にする（解決）
+        resolve(JSON.parse(json))
+      } catch(err) {
+        // reject状態にする（拒否）
+        reject(err)
+      }
+    },1000)
+  })
+}
+const toBeFullfilled = parseJSONAsync('{ "message" : "hello", "to" : "world" }')
+const tobeRejcted = parseJSONAsync('不正なjson')
+console.log('.............Promise生成直後.............')
+console.log(toBeFullfilled)
+console.log(tobeRejcted)
+
+setTimeout(() => {
+  console.log('.............1秒後.............')
+  console.log(toBeFullfilled)
+  console.log(tobeRejcted)
+},1000)
+
+// Promise.resolve(), Promise.reject()
+new Promise(resolve => resolve({foo:1}))
+Promise.resolve({foo:1})
+
+new Promise((resolve, reject) => {reject(new Error('error!')) })
+Promise.reject(new Error('error!!'))
+
+// Promise.resolve()にPromiseインスタンスを渡した場合は引数がそのまま返される
+const fooPromise = Promise.resolve('foo')
+fooPromise === Promise.resolve(fooPromise) // true
