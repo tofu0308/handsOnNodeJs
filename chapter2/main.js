@@ -325,7 +325,7 @@ console.log(unrecoveredPromise)
 const rejectedPromise = stringPromise.then(() => {throw new Error('エラー')})
 
 // then()がfullfilledなPromiseインスタンスを返すパターン
-const objPromise = stringPromise.thrn(parseJSONAsync)
+const objPromise = stringPromise.then(parseJSONAsync)
 console.log(objPromise)
 
 // then()がrejectedなPromiseインスタンスを返すパターン
