@@ -1,3 +1,4 @@
+const { resolve } = require("bluebird")
 const { sync } = require("chownr")
 const { set } = require("core-js/core/dict")
 const ToPrimitive = require("es-to-primitive/es5")
@@ -332,3 +333,67 @@ console.log(objPromise)
 const rejectedObjPromise = Promise.resolve('不正なjson').then(parseJSONAsync)
 console.log(rejectedObjPromise)
 
+
+// catach()
+//　以下は同じ処理
+const withoutOnFulfilled = Promise.reject(new Error('エラー')).then(undefined, () => 0)
+const catchedPromise = Promise.reject(new Error('catched Promise')).catch(() => 0)
+console.log(withoutOnFulfilled)
+console.log(catchedPromise)
+
+// then()を2引数で実行するパターン
+asyncFunc1(input)
+  .then(
+    asyncFunc2, // onFulfilled
+    err => { // onRejected
+      // asyncFunc1用のエラーハンドリング
+    }
+  )
+  .then(
+    result => { // onFulfilled
+      // この中で発生したエラーは第2引数（onRejected）でハンドリングされない
+    },
+    err => {// onRejected
+      // asyncFunc2用のエラーハンドリング
+    }
+  )
+
+// onRejectedを省略し、then()の後ろにcatch()をつけるパターン
+asyncFunc1(input)
+  .then(asyncFunc2 /* onFulfilled */)
+  .then(result => { // onFulfilled
+    // この中で発生したエラーもcatch()に渡したonRejectedでハンドリングされる
+  })
+  .catch(err => { // onRejected
+    // ここにエラーハンドリングを集約できる
+  })
+
+// finally()
+const onFinally = () => console.log('finallyのcallback')
+
+// 非同期処理が成功したかどうかに関わらず、onFinallyを実行
+Promise.resolve().finally(onFinally)
+Promise.reject(new Error('error ')).finally(onFinally)
+
+// finallyのコールバックを2で返しても、Promiseインスタンスは1で解決される
+const returnValueInFinally = Promise.resolve(1).finally(() => 2)
+console.log(returnValueInFinally)
+
+// コールバック内でエラーがthrowされる場合や、コールバックがrejectedなPromiseインスタンスを帰す場合finally()の返すPromiseインスタンスも同じ理由で拒否される
+const throwErrorInFinally = Promise.resolve(1).finally(() => { throw new Error('エラー') })
+console.log(throwErrorInFinally)
+
+// finallyの返すPromiseインスタンスはコールバックの返すPromiseインスタンスが解決されるまで解決されない
+Promise
+  .resolve('foo')
+  .finally(() => 
+    new Promise(resolve => 
+      setTimeout(
+        () => {
+          console.log('finally()で1秒経過')
+          resolve()
+        }, 1000
+      )
+    )
+  )
+  .then(console.log)
