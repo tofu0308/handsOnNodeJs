@@ -285,15 +285,15 @@ function parseJSONAsync(json) {
     },1000)
   })
 }
-const toBeFullfilled = parseJSONAsync('{ "message" : "hello", "to" : "world" }')
+const toBeFulfilled = parseJSONAsync('{ "message" : "hello", "to" : "world" }')
 const tobeRejcted = parseJSONAsync('不正なjson')
 console.log('.............Promise生成直後.............')
-console.log(toBeFullfilled)
+console.log(toBeFulfilled)
 console.log(tobeRejcted)
 
 setTimeout(() => {
   console.log('.............1秒後.............')
-  console.log(toBeFullfilled)
+  console.log(toBeFulfilled)
   console.log(tobeRejcted)
 },1000)
 
@@ -321,13 +321,14 @@ console.log(stringPromise) // thenを実行しても元のPromiseのインスタ
 const unrecoveredPromise = Promise.reject(new Error('error!!')).then(() => 1, err => err.message)
 console.log(unrecoveredPromise)
 
-// onFullfilled,onRejectedの中でエラーが発生した場合then()の戻り値はそのエラーを理由に拒否される
+// onFulfilled,onRejectedの中でエラーが発生した場合then()の戻り値はそのエラーを理由に拒否される
 const rejectedPromise = stringPromise.then(() => {throw new Error('エラー')})
 
-// then()がfullfilledなPromiseインスタンスを返すパターン
+// then()がfulfilledなPromiseインスタンスを返すパターン
 const objPromise = stringPromise.then(parseJSONAsync)
 console.log(objPromise)
 
 // then()がrejectedなPromiseインスタンスを返すパターン
 const rejectedObjPromise = Promise.resolve('不正なjson').then(parseJSONAsync)
 console.log(rejectedObjPromise)
+
