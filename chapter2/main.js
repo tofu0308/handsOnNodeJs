@@ -397,3 +397,9 @@ Promise
     )
   )
   .then(console.log)
+
+// then(),catch(),finally()の実行タイミング
+Promise
+  .resolve('foo')
+  .then(result => console.log('callback', result))
+console.log('この行が先に実行される')
