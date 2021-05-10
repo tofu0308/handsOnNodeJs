@@ -1,5 +1,6 @@
 const { sync } = require("chownr")
 const { set } = require("core-js/core/dict")
+const ToPrimitive = require("es-to-primitive/es5")
 const { result } = require("lodash")
 const { setDefaultEncoding } = require("stdout-stream")
 
@@ -306,3 +307,27 @@ Promise.reject(new Error('error!!'))
 // Promise.resolve()にPromiseインスタンスを渡した場合は引数がそのまま返される
 const fooPromise = Promise.resolve('foo')
 fooPromise === Promise.resolve(fooPromise) // true
+
+// 2.3.2 then(),catch(),finally()
+// then()
+const stringPromise = Promise.resolve('{"foo":1}')
+console.log(stringPromise)
+
+const numberPromise = stringPromise.then(str => str.length)
+console.log(numberPromise)
+console.log(stringPromise) // thenを実行しても元のPromiseのインスタンスには影響を及ぼさない
+
+// onRejectedを省略せず値を返せば、その値で解決されたPromiseインスタンスを得られる
+const unrecoveredPromise = Promise.reject(new Error('error!!')).then(() => 1, err => err.message)
+console.log(unrecoveredPromise)
+
+// onFullfilled,onRejectedの中でエラーが発生した場合then()の戻り値はそのエラーを理由に拒否される
+const rejectedPromise = stringPromise.then(() => {throw new Error('エラー')})
+
+// then()がfullfilledなPromiseインスタンスを返すパターン
+const objPromise = stringPromise.thrn(parseJSONAsync)
+console.log(objPromise)
+
+// then()がrejectedなPromiseインスタンスを返すパターン
+const rejectedObjPromise = Promise.resolve('不正なjson').then(parseJSONAsync)
+console.log(rejectedObjPromise)
