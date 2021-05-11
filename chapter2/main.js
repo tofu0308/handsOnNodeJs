@@ -457,4 +457,50 @@ asyncFunc()
     console.log('逐次実行所要時間', perf_hooks.performance.now() - start)
   })
 
+// Promise.race()
+// 引数に含まれるPromiseインスタンスが一つでもsetteledになると、その他のPromiseインスタンスの結果を待たずにそのPromiseインスタンスと同じ状態になる
 
+// 引数で与えられた時間だけ待機する非同期処理
+function wait(time) {
+  return new Promise(resolve => setTimeout(resolve, time))
+}
+
+const fulfilledFirst = Promise.race([
+  wait(10).then(()=> 1),　 // この結果が採用される
+  wait(30).then(()=> 'foo'),
+  wait(20).then(()=> Promise.reject(new Error('fulfilledFirstのエラー'))),　
+])
+
+const rejectFirst = Promise.race([
+  wait(20).then(()=> 1),
+  wait(30).then(()=> 'foo'),
+  wait(10).then(()=> Promise.reject(new Error('rejectFirstのエラー'))),　 // この結果が採用される
+])
+
+const containsNoPromise = Promise.race([
+  wait(10).then(()=> 1),
+  'foo', // この結果が採用される
+  wait(20).then(()=> Promise.reject(new Error('containsNoPromiseのエラー'))),
+])
+
+// 引数にから配列を渡すとpending状態に留まるPromiseインスタンスを返す
+const raceWithEmptyArray = Promise.race([])
+
+// Promise.race()の使用例（タイムアウトの実装）
+function withTimeout(promise, timeout){
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('withTimeoutのエラー')),timeout)
+    })
+  ])
+}
+
+// 20msで完了する非同期処理
+const promise = new Promise(resolve => setTimeout(() => resolve(1), 20))
+
+// timeout 30ms
+const shouldBeResolved = withTimeout(promise, 30)
+
+// timeout 10ms
+const shouldBeRejected = withTimeout(promise, 10)
