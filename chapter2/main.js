@@ -424,7 +424,7 @@ const contaisRejected = Promise.add(
   ]
 )
 
-// 引数にから配列を渡すと、から配列で解決済みのPromiseインスタンスを返す
+// 引数に空配列を渡すと、空配列で解決済みのPromiseインスタンスを返す
 Promise.all([])
 
 
@@ -457,6 +457,7 @@ asyncFunc()
     console.log('逐次実行所要時間', perf_hooks.performance.now() - start)
   })
 
+
 // Promise.race()
 // 引数に含まれるPromiseインスタンスが一つでもsetteledになると、その他のPromiseインスタンスの結果を待たずにそのPromiseインスタンスと同じ状態になる
 
@@ -483,7 +484,7 @@ const containsNoPromise = Promise.race([
   wait(20).then(()=> Promise.reject(new Error('containsNoPromiseのエラー'))),
 ])
 
-// 引数にから配列を渡すとpending状態に留まるPromiseインスタンスを返す
+// 引数に空配列を渡すとpending状態に留まるPromiseインスタンスを返す
 const raceWithEmptyArray = Promise.race([])
 
 // Promise.race()の使用例（タイムアウトの実装）
@@ -504,3 +505,15 @@ const shouldBeResolved = withTimeout(promise, 30)
 
 // timeout 10ms
 const shouldBeRejected = withTimeout(promise, 10)
+
+
+// Promise.allSettled()
+const allSettled = Promise.allSettled([
+  1,
+  Promise.resolve('foo'),
+  Promise.reject(new Error('allSetteledのエラー')),
+  Promise.resolve(true)
+])
+
+// 引数に空配列を渡した場合の挙動はPromise.all()と同じで空配列で解決済みのPromiseインスタンスを返す
+Promise.allSettled([])
