@@ -3,6 +3,7 @@ const { sync } = require("chownr")
 const { set } = require("core-js/core/dict")
 const ToPrimitive = require("es-to-primitive/es5")
 const { result } = require("lodash")
+const { util } = require("node-forge")
 const { setDefaultEncoding } = require("stdout-stream")
 
 // コールバックを利用した非同期APIを実行する
@@ -540,3 +541,14 @@ const noneFullfilled = Promise.any([
 // node.js v14.13.0時点では使用不可（エラーになる）
 Promise.any([])
 Promise.any([]).catch(err => console.log(err.errors))
+
+// util.promisify()
+const readdir = util.promisify(fs.readdir)
+readdir('.').then(console.log)
+
+setTimeout[util.promisify.custom]
+const　setTimeoutPromise = util.promisify(setTimeout)
+setTimeoutPromise(1000).then(() => console.log('1s経過'))
+
+// fs Promise API
+fs.promises.readdir('.').then(console.log)
