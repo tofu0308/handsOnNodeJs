@@ -517,3 +517,26 @@ const allSettled = Promise.allSettled([
 
 // 引数に空配列を渡した場合の挙動はPromise.all()と同じで空配列で解決済みのPromiseインスタンスを返す
 Promise.allSettled([])
+
+
+// Promise.any()
+// 引数に含まれるPromiseインスタンスが1つでもfulfilledになると他のインスタンスの結果を待たずにfulfilledになり、すべてrejectedになるとrejectedになる
+
+// node.js v14.13.0時点では使用不可（エラーになる）
+const anyFulfilled = Promise.any([
+  Promise.resolve('foo'),　// 動作する場合はこの結果を返す
+  Promise.reject(new Error('anyFulfilledのエラー')),
+  Promise.resolve(true)
+])
+
+// node.js v14.13.0時点では使用不可（エラーになる）
+// rejectedなPromiseインスタンスを返す時はインスタンスが拒否された理由を引数の順番通りに保持する配列をerrorsプロパティに持つ、AggregateErrorのインスタンスになる
+const noneFullfilled = Promise.any([
+  Promise.reject(new Error('noneFullfilled1のエラー')),
+  Promise.reject(new Error('noneFullfilled2のエラー'))
+])
+
+
+// node.js v14.13.0時点では使用不可（エラーになる）
+Promise.any([])
+Promise.any([]).catch(err => console.log(err.errors))
