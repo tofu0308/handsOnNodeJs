@@ -403,3 +403,58 @@ Promise
   .resolve('foo')
   .then(result => console.log('callback', result))
 console.log('この行が先に実行される')
+
+// Promiseのスタティックメソッドを使った非同期処理の並行実行
+// Promise.all()
+const allResolved = Promise.all(
+  [
+    1, // Promise以外のものも含められる
+    Promise.resolve('foo'),
+    Promise.resolve(true)
+  ]
+)
+
+// 最初にrejectedになったものと同じ理由で拒否される
+const contaisRejected = Promise.add(
+  [
+    1,
+    Promise.resolve('foo'),
+    Promise.reject(new Error('エラーの発行')), 　// このエラーを吐く
+    Promise.resolve(true)
+  ]
+)
+
+// 引数にから配列を渡すと、から配列で解決済みのPromiseインスタンスを返す
+Promise.all([])
+
+
+// 1秒かかる非同期処理
+function asyncFunc() {
+  return new Promise(resolve => setTimeout(resolve ,1000))
+}
+
+// 現在時刻を取得
+const start = perf_hooks.performance.now()
+
+//  逐次実行(約4秒)
+asyncFunc()
+  .then(asyncFunc)
+  .then(asyncFunc)
+  .then(asyncFunc)
+  .then(
+    () => console.log('逐次実行所要時間', perf_hooks.performance.now() - start)
+  )
+
+
+// Promise.all()で並行実行（約1秒）
+  Promise.all([
+  asyncFunc(),
+  asyncFunc(),
+  asyncFunc(),
+  asyncFunc()
+])
+  .then(() => {
+    console.log('逐次実行所要時間', perf_hooks.performance.now() - start)
+  })
+
+
