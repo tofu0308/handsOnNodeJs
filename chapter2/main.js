@@ -552,3 +552,87 @@ setTimeoutPromise(1000).then(() => console.log('1s経過'))
 
 // fs Promise API
 fs.promises.readdir('.').then(console.log)
+
+
+// ジェネレータ
+function* generatorFunc() {
+  console.log('genertor関数開始')
+  console.log('yield 1')
+  yield 1
+  console.log('yield 2')
+  yield 2
+  console.log('yield 3')
+  yield 3
+  console.log('genertor関数終了')
+  return 'generator関数戻り地'
+}
+const generator = generatorFunc()
+
+generator.next() // 繰り返し実行する
+/*
+  genertor関数開始
+  yield 1
+  { value: 1, done: false }
+  > generator.next()
+  yield 2
+  { value: 2, done: false }
+  > generator.next()
+  yield 3
+  { value: 3, done: false }
+  > generator.next()
+  genertor関数終了
+  { value: 'generator関数戻り地', done: true }
+  > generator.next()
+  { value: undefined, done: true }
+*/
+
+// Iteratorとイテラブル
+const generator2 = generatorFunc()
+const iterator = generator2[Symbol.iterator]()
+/*
+  > iterator.next()
+  genertor関数開始
+  yield 1
+  { value: 1, done: false }
+  > iterator.next()
+  yield 2
+  { value: 2, done: false }
+  > iterator.next()
+  yield 3
+  { value: 3, done: false }
+  > iterator.next()
+  genertor関数終了
+  { value: 'generator関数戻り地', done: true }
+  > iterator.next()
+  { value: undefined, done: true }
+*/
+
+iterator === generator2 // true
+
+const generator3 = generatorFunc()
+for( const v of generator3) { console.log('for...of', v)}
+/*
+  genertor関数開始
+  yield 1
+  for...of 1
+  yield 2
+  for...of 2
+  yield 3
+  for...of 3
+  genertor関数終了
+  undefined
+*/
+
+// mapやsetもイテラブル
+const arrayIterator = [1, 2, 3][Symbol.iterator]()
+/*
+  > arrayIterator.next()
+  { value: 1, done: false }
+  > arrayIterator.next()
+  { value: 2, done: false }
+  > arrayIterator.next()
+  { value: 3, done: false }
+  > arrayIterator.next()
+  { value: undefined, done: true }
+*/
+
