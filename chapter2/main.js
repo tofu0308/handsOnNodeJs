@@ -1,4 +1,4 @@
-const { resolve } = require("bluebird")
+const { resolve, try } = require("bluebird")
 const { sync } = require("chownr")
 const { set } = require("core-js/core/dict")
 const ToPrimitive = require("es-to-primitive/es5")
@@ -636,3 +636,119 @@ const arrayIterator = [1, 2, 3][Symbol.iterator]()
   { value: undefined, done: true }
 */
 
+// 引数を渡したnewx()の実行、及びthrow()
+// リセット可能なカウンタを実装するジェネレータ関数
+function* resetableGneratorFunc() {
+  let count = 0
+  while(true) {
+    // next()を心に評価される引数（trueなど）で実行するとカウンタがリセットされる
+    if(yield count += 1) {
+      count = 0
+    }
+  }
+}
+
+const resetableGnerator = resetableGneratorFunc()
+/*
+  > resetableGnerator.next()
+  { value: 1, done: false }
+  > resetableGnerator.next()
+  { value: 2, done: false }
+  > resetableGnerator.next()
+  { value: 3, done: false }
+  > resetableGnerator.next()
+  { value: 4, done: false }
+  > resetableGnerator.next(true)
+  { value: 1, done: false }
+  > resetableGnerator.next()
+  { value: 2, done: false }
+  > resetableGnerator.next()
+  { value: 3, done: false }
+  > resetableGnerator.next()
+  { value: 4, done: false }
+*/
+
+// throw()
+function* tryCatchGeneratorFunc(){
+  try {
+    yield 1
+  } catch(err) {
+    console.log('tryCAtchGeneratorFuncのエラー', err)
+    yield 2
+  }
+}
+
+const tryCatchGenerator = tryCatchGeneratorFunc()
+
+try {
+  // try...catchのないresetableGnerator()に対してthrow()実行
+  resetableGnerator.throw(new Error('try...catchのないresetableGnerator()に対してthrow()実行'))
+}  catch(err) {
+  console.log('ジェネレータ外でエラーをキャッチ', err)
+}
+/*
+> resetableGnerator.next()
+{ value: undefined, done: true }
+↑ジェネレータが終了する
+*/
+
+// ジェネレータを利用した非同期プログラミング
+function parseJSONAsync(json) {
+  return new Promise((resolve,reject) => {
+    setTimeout(()=> {
+      try{
+        resolve(JSON.parse(json))
+      }catch(err){
+        reject(err)
+      }
+    }, 1000)
+  })
+}
+
+// yieldの仕組みを利用して非同期処理を実行数r関数
+function* asyncWithGeneratorFunc(json) {
+  try {
+    const result = yield parseJSONAsync(json)
+    console.log('parse結果', result)
+  } catch(err) {
+    console.log('asyncWithGeneratorFuncのエラーをキャッチ', err)
+  }
+}
+
+const asyncWithGenerator1 = asyncWithGeneratorFunc('{"foo":1}')
+const promise1 = asyncWithGenerator1.next().value
+promise1.then(result => asyncWithGenerator1.next(result))
+
+const asyncWithGenerator2 = asyncWithGeneratorFunc('不正なJSON')
+const promise2 = asyncWithGenerator2.next().value
+promise2.catch(err => asyncWithGenerator2.throw(err))
+
+
+function handleAsyncWithGenerator(generator, resolved) {
+  // 前回yieldされたPromiseインスタンスの値を引数にnext()を実行
+  // 初回はresolvedに値が入っていない
+  const {done, value} = generator.next(resolved)
+  if(done) {
+    // ジェネレータが完了した場合はvalueで解決されるPromiseインスタンスを返す
+    return Promise.resolve(value)
+  }
+  return value.then(
+    // 正常系では再帰呼び出し
+    resolved => handleAsyncWithGenerator(generator, resolved),
+
+    // 異常系
+    err => generator.throw(err)
+  )
+}
+
+handleAsyncWithGenerator(asyncWithGeneratorFunc('{"foo":1}'))
+/*
+Promise { <pending> }
+> parse結果 { foo: 1 }
+*/
+
+handleAsyncWithGenerator(asyncWithGeneratorFunc('不正なJSON'))
+/*
+Promise { <pending> }
+> asyncWithGeneratorFuncのエラーをキャッチ SyntaxError: Unexpected token 不 in JSON at position 0
+*/
