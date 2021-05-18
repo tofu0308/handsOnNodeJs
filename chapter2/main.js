@@ -1,4 +1,4 @@
-const { resolve, try } = require("bluebird")
+const { resolve, try, reject } = require("bluebird")
 const { sync } = require("chownr")
 const { set } = require("core-js/core/dict")
 const ToPrimitive = require("es-to-primitive/es5")
@@ -692,6 +692,7 @@ try {
 ↑ジェネレータが終了する
 */
 
+
 // ジェネレータを利用した非同期プログラミング
 function parseJSONAsync(json) {
   return new Promise((resolve,reject) => {
@@ -752,3 +753,54 @@ handleAsyncWithGenerator(asyncWithGeneratorFunc('不正なJSON'))
 Promise { <pending> }
 > asyncWithGeneratorFuncのエラーをキャッチ SyntaxError: Unexpected token 不 in JSON at position 0
 */
+
+
+// async/await
+function parseJSONAsync(json) {
+  return new Promise((resolve, reject) => { 
+    setTimeout(()=>{
+      try {
+        resolve(JSON.parse(json))
+      } catch(err) {
+        reject(err)
+      }
+    },1000)
+  })
+}
+
+async function asyncFunc(json) {
+  try {
+    const result = parseJSONAsync(json)
+    console.log('Parse結果', result)
+  } catch(err) {
+    console.log('asyncFunc errorをキャッチ', err)
+  }
+}
+
+// 正常系
+asyncFunc('{"foo":1}')
+
+// 異常系
+asyncFunc('不正なJSON')
+
+// asyncキーワードのついた関数は必ずPromiseインスタンスを返す
+async function asyncReturnFoo(){return 'foo'}
+asyncReturnFoo()
+// Promise { 'foo' }
+
+async function asyncThrow() {throw new Error('asyncThrowのエラー')}
+asyncThrow()
+/**
+ Promise {
+  <rejected> Error: asyncThrowのエラー
+ */
+
+ // async関数外の処理はawaitの影響を受けない
+async function pauseAndResume(pausePeriod) {
+  console.log('pauseAndResume開始')
+  await new Promise(resolve => setTimeout(resolve, pausePeriod))
+  console.log('pauseAndResume再開')
+}
+
+pauseAndResume(1000)
+console.log('async関数外の処理はawaitの影響を受けない')
