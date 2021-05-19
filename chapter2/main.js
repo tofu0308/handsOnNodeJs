@@ -804,3 +804,4 @@ async function pauseAndResume(pausePeriod) {
 
 pauseAndResume(1000)
 console.log('async関数外の処理はawaitの影響を受けない')
+
