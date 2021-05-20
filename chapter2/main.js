@@ -845,3 +845,75 @@ async function* asyncGenerator() {
 for await (const element of asyncGenerator()) {
   console.log(element)
 }
+
+
+// 練習問題
+// 2-1
+// Promiseインスタンスはsettled状態以降は状態がそれ以上遷移しないことを確認
+new Promise((resolve, reject) => {
+  resolve('foo')
+  resolve('bar')
+  reject(new Error('練習問題2-1エラー'))
+}).then(
+  // onFulfilled
+  result => console.log('onFulfilled', result),
+  // onRejected
+  err => console.log('onRejected', err)
+)
+
+/*
+Promise { <pending> }
+> onFulfilled foo
+
+fooが解決されsettledのため、以降は実行しない
+ */
+
+new Promise((resolve, reject) => {
+  reject(new Error('練習問題2-1エラー'))
+  resolve('foo')
+  resolve('bar')
+}).then(
+  // onFulfilled
+  result => console.log('onFulfilled', result),
+  // onRejected
+  err => console.log('onRejected', err)
+)
+
+/*
+Promise { <pending> }
+> onRejected Error: 練習問題2-1エラー
+*/
+
+
+// 2-2
+function parseJSONAsync(json) {
+  return new Promise((resolve, reject) => {
+    setTimeout(()=> {
+      try{
+        resolve(JSON.parse(json))
+      }catch(err){
+        reject(err)
+      }
+    },1000)
+  }) 
+}
+
+const parseJSONAsyncCache = {}
+function parseJSONAsyncWithCache(json) {
+  let cached = parseJSONAsyncCache[json]
+  if(!cached) {
+    cached = parseJSONAsync(json)
+    parseJSONAsyncCache[json] = cached
+  }
+  return cached
+}
+
+parseJSONAsyncWithCache('{"message":"練習問題2-2"}')
+  .then(result => console.log('1回目の結果', result))
+  .then(()=> {
+    const promise = parseJSONAsyncWithCache('{"message":"練習問題2-2"}')
+    console.log('2回目の呼び出し完了')
+    return promise
+  })
+  .then(result => console.log('2回目の結果', result))
+console.log('1回目の呼び出し完了')
