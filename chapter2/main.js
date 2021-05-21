@@ -917,3 +917,47 @@ parseJSONAsyncWithCache('{"message":"練習問題2-2"}')
   })
   .then(result => console.log('2回目の結果', result))
 console.log('1回目の呼び出し完了')
+
+// 2-3
+/*
+  数値で解決されるPromiseインスタンスの配列を引数に取り、その合計値で解決されるPromiseインスタンスを返す関数をPromise.allSettled()を使って実装する。
+  引数をPromise.settled()で処理し、結果として得られた配列要素のうちstatusがfulfiledなものの値を合計する
+*/
+
+async function asyncSum(promiseArr) {
+  let sum = 0;
+  const arr = await Promise.allSettled(promiseArr)
+
+  for(const e of arr) {
+    if(e.status === 'fulfilled') {
+      sum += e.value
+    }
+  }
+  return sum
+}
+
+// 動作検証
+asyncSum(
+  [1,2,3,4].map(e=> e%2 === 0 
+    ? Promise.resolve(e)
+    : Promise.reject(new Error('asyncSum error'))
+  )
+).then(console.log)
+
+// 2-4
+// 2-3をPromise.all()を使用して書く
+async function asyncSum(promiseArr) {
+  let sum = 0;
+  const arr = await Promise.all(
+    promiseArr.map(e => e.catch(()=> 0))
+  )
+  for (const e of arr) sum += e
+  return sum
+}
+
+asyncSum(
+  [1,2,3,4].map(e=> e%2 === 0 
+    ? Promise.resolve(e)
+    : Promise.reject(new Error('asyncSum error'))
+  )
+).then(console.log)
