@@ -28,10 +28,9 @@ server.listen(8000)
 // EventEmitterの利用
 
 // FizzBuzz
-// 下記コードは一部問題あり
 function createFizzBuzzEventEmitter(until) {
   const eventEmitter = new events.EventEmitter()
-  _emitFizzBuzz(eventEmitter, until)
+  process.nextTick(() => {_emitFizzBuzz(eventEmitter, until)})
   return eventEmitter
 }
 
@@ -76,4 +75,9 @@ createFizzBuzzEventEmitter(40)
   .on('Fizz', fizzListener)
   .on('Buzz', buzzListener)
   .once('FizzBuzz', fizzBuzzListener) // FizzBuzzイベントだけonceで登録
+  .on('end', endListener)
+
+
+createFizzBuzzEventEmitter(0)
+  .on('start', startListener)
   .on('end', endListener)
