@@ -81,3 +81,10 @@ createFizzBuzzEventEmitter(40)
 createFizzBuzzEventEmitter(0)
   .on('start', startListener)
   .on('end', endListener)
+
+// 注:EventEmitterのリスナは常に同期的に実行される
+const fooEventEmitter = new events.EventEmitter()
+fooEventEmitter.on('foo', () => {
+  console.log('fooイベントリスナの実行')
+})
+console.log('fooイベント発行', fooEventEmitter.emit('foo'))
