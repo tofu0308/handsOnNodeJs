@@ -88,3 +88,38 @@ fooEventEmitter.on('foo', () => {
   console.log('fooイベントリスナの実行')
 })
 console.log('fooイベント発行', fooEventEmitter.emit('foo'))
+
+// EventEmitterとメモリリーク
+/**
+ 一つのEventEmitterインスタンスに11個以上のイベントリスナを登録すると警告が出力される
+ */
+
+ const barEventEmitter = new events.EventEmitter()
+
+ for(let i=0; i<11; i++) {
+   barEventEmitter.on('bar', () => {console.log('bar')})
+ }
+
+/**
+  > (node:54288) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 bar listeners added to [EventEmitter]. Use emitter.setMaxListeners() to increase limit
+*/
+
+const messageEvenetEmitter = new events.EventEmitter();
+
+{
+  const listner = () => console.log('Hello')
+  messageEvenetEmitter.on('message', listner)
+}
+
+// リスナを100個まで登録出来るようにする
+const bazEventEmitter = new events.EventEmitter()
+bazEventEmitter.setMaxListeners(100)　// 0またはInfinityを指定すると、警告が出なくなる
+for(let i=0; i<100; i++) {
+  bazEventEmitter.on('bar', () => {console.log('baz')})
+}
+
+// 全EventEmitterを対象に、MaxListenersを100にする
+/**
+events.EventEmitter.defaultMaxListeners = 100
+ */
+
