@@ -174,3 +174,20 @@ new FizzBuzzEventEmitter()
 .on('FizzBuzz', fizzBuzzListener)
 .on('end', endListener)
 .start(20)
+
+
+// コールバックパターン形式でイベントリスナを登録
+const http = require('http')
+
+// サーバオブジェクトの生成及びrequestイベントのリスナ登録
+const server = http.createServer((req, res)=> {
+  // クライアントからのリクエストに対する処理
+  res.writeHead(200, {'Content-Type': 'text/plain'})
+  res.write('コールバックパターン形式でイベントリスナを登録')
+  res.end()
+})
+
+// ポートの監視及びlisteningイベントリスナ登録
+server.listen(8000, () => {
+  // ポートの待機を介した際の処理
+})
