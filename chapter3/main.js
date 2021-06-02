@@ -193,7 +193,6 @@ server.listen(8000, () => {
 })
 
 
-
 // EventEmitterからのasyncイテラブルの生成
 const eventAEmitter = new events.EventEmitter()
 
@@ -222,8 +221,20 @@ eventAEmitter.emit('eventA', 'Hello')
 eventAEmitter.emit('eventA', 'Hello', 'World')
 
 // endを渡してeventAをemit()
-eventEmitter.emit('eventA', 'end')
+eventAEmitter.emit('eventA', 'end')
 
 // ループを抜けたたためリスな登録が解除されることを確認
 eventAEmitter.listeners('eventA')
 
+
+
+// EventEmitterのPromise化
+const eventBEmitter = new events.EventEmitter()
+const eventBPromise = events.once(eventBEmitter, 'eventB')
+
+eventBPromise.then((arg) => { console.log('eventB発生', arg) })
+eventBEmitter.emit('eventB', 'Hello', 'World')
+// eventBが一度でも発行されたらeventBPromiseはfulfilledになるため、以降のイベント発行には反応しない
+
+eventBEmitter.emit('eventB', 'one more') // false
+// リスナが存在しないため、emit()がfalseを返す、'eventB発生'のログ出力もなし
