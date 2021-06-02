@@ -191,3 +191,39 @@ const server = http.createServer((req, res)=> {
 server.listen(8000, () => {
   // ポートの待機を介した際の処理
 })
+
+
+
+// EventEmitterからのasyncイテラブルの生成
+const eventAEmitter = new events.EventEmitter()
+
+// asyncイテラブルの生成
+const eventAIterable = events.on(eventAEmitter, 'eventA')
+
+// リスナが一つ登録されていることを確認
+eventAEmitter.listeners('eventA')
+
+// プログラムの実行がawait...ofの先にすすめるようIIAFE（即時実行async関数式）を使う
+(async()=> {
+  for await (const a of eventAIterable) {
+    // aの値はeventAをemit()したときの引数の配列
+    if(a[0] === 'end') {
+      // endが渡されたらループを抜ける
+      break
+    }
+    console.log('eventA', a)
+  }
+})()
+
+// eventAをemit()
+eventAEmitter.emit('eventA', 'Hello')
+
+// 再度eventAをemit()
+eventAEmitter.emit('eventA', 'Hello', 'World')
+
+// endを渡してeventAをemit()
+eventEmitter.emit('eventA', 'end')
+
+// ループを抜けたたためリスな登録が解除されることを確認
+eventAEmitter.listeners('eventA')
+
