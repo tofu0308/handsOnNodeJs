@@ -261,3 +261,18 @@ fs.createReadStream('src.txt')
   .pipe(crypto.createHash('sha256'))
   .pipe(fs.createWriteStream('dest2.txt'))
   .on('finish',  ()=>{console.log('encrypted and copied')})
+
+// 読み込みストリーム
+const readStream = fs.createReadStream('src.txt')
+readStream
+  // readableイベントリスナ登録
+  .on('readable', () => {
+    console.log('readble')
+    let chunk
+    // 現在読み込み可能なデータをすべて読み込む
+    while ((chunk = readStream.read()) !== null) {
+      console.log(`chunk; ${chunk.toString()}`)
+    }
+  })
+  // endイベントリスナ登録
+  .on('end', () => console.log('end'))
