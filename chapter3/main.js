@@ -178,6 +178,7 @@ new FizzBuzzEventEmitter()
 
 // コールバックパターン形式でイベントリスナを登録
 const http = require('http')
+const { fstat } = require('node:fs')
 
 // サーバオブジェクトの生成及びrequestイベントのリスナ登録
 const server = http.createServer((req, res)=> {
@@ -238,3 +239,25 @@ eventBEmitter.emit('eventB', 'Hello', 'World')
 
 eventBEmitter.emit('eventB', 'one more') // false
 // リスナが存在しないため、emit()がfalseを返す、'eventB発生'のログ出力もなし
+
+
+// ストリーム
+// ストリームの基本
+function copyFileWithSteram(src, dest, cb) {
+  // ファイルから読み込むストリームを生成
+  fs.createReadStream(src)
+    // ファイルから書き込みストリームを生成し、pipe()でつなぐ
+    .pipe(fs.createWriteStream(dest))
+    // 完了時にコールバックを呼び出す
+    .on('finish', cb)
+}
+
+fs.writeFileSync('src.txt', 'Hello, Stream') // ファイル生成
+copyFileWithSteram('src.txt', 'dest.txt', ()=>{console.log('copied')})　// コピー実行
+
+// コピーする際にファイル内容を暗号化する
+fs.createReadStream('src.txt')
+  // 暗号化処理を追加
+  .pipe(crypto.createHash('sha256'))
+  .pipe(fs.createWriteStream('dest2.txt'))
+  .on('finish',  ()=>{console.log('encrypted and copied')})
