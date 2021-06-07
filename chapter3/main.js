@@ -318,3 +318,38 @@ helloReadableStream
     }
   })
   .on('end', () => console.log('end'))
+
+// 書き込みストリーム
+// ファイルへの書き込み
+const filteWriteStream = fs.createWriteStream('dest3-2-3.txt')
+filteWriteStream.write('Hello\n')
+filteWriteStream.write('Hello\n')
+filteWriteStream.end
+
+fs.readFileSync('dest3-2-3.txt', 'utf8')
+
+class DelayLogStream extends stream.Writable {
+  constructor(options) {
+    // objectMode: trueを指定するとオブジェクトをデータとして流せる
+    super({ objectMode: true, ...options })
+  }
+
+  _write(chunk, encoding, callback) {
+    console.log('_write()')
+    // messageプロパティ（文字列）、delayプロパティ（数値）を含むオブジェクトがデータとして流れてくることを期待
+    const {message, delay} = chunk
+
+    // delayで指定したミリ秒だけ遅れてmessageをログに出す
+    setTimeout(() => {
+      console.log(message)
+      callback()
+    }, delay)
+  }
+}
+
+const delayLogStream = new DelayLogStream()
+delayLogStream.write({message: 'すぐ出力される', delay: 0})
+delayLogStream.write({message: '1秒後に出力される', delay: 1000})
+delayLogStream.end({message: '0.1病後に出力される（終了）', delay: 100})
+
+// ※_read(),_write()は外部から直接実行してはならない
