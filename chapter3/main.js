@@ -179,6 +179,8 @@ new FizzBuzzEventEmitter()
 // コールバックパターン形式でイベントリスナを登録
 const http = require('http')
 const { fstat } = require('node:fs')
+const { Stream } = require('node:stream')
+const { Z_STREAM_END } = require('node:zlib')
 
 // サーバオブジェクトの生成及びrequestイベントのリスナ登録
 const server = http.createServer((req, res)=> {
@@ -275,4 +277,44 @@ readStream
     }
   })
   // endイベントリスナ登録
+  .on('end', () => console.log('end'))
+
+
+/*
+ 実行時は下記のフラグを利用する
+node --experimental-repl-await
+*/
+
+class HelloReadableStream extends stream.Readable {
+  constructor(options){
+    super(options)
+    this.langages = ['JavaScript', 'Python', 'Java', 'C#']
+  }
+
+  _read(size) {
+    console.log('_read(')
+    
+    let langage
+    while((langage = this.langages.shift())) {
+      // push()でデータを流す（push()がfalseを返したらそれ以上流さない）
+      if(!this.push(`Hello, ${langage}!\n`)) {
+        console.log('読み込み中断(push()がfalseを返したらそれ以上流さない)')
+        return
+      }
+    }
+    console.log('読み込み完了（最後にnullを流してストリームの終了を通知する）')
+    this.push(null)
+  }
+}
+
+const helloReadableStream = new HelloReadableStream()
+
+helloReadableStream
+  .on('readable', () => {
+    console.log('readable')
+    let chunk
+    while((chunk = helloReadableStream.read()) !== null) {
+      console.log(`chunk: ${chunk.toString()}`)
+    }
+  })
   .on('end', () => console.log('end'))
