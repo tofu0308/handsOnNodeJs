@@ -353,3 +353,47 @@ delayLogStream.write({message: '1秒後に出力される', delay: 1000})
 delayLogStream.end({message: '0.1病後に出力される（終了）', delay: 100})
 
 // ※_read(),_write()は外部から直接実行してはならない
+
+
+// 二重ストリーム、変換ストリーム
+class LineTransformStream extends stream.Transform {
+  // 上流から受け取ったデータのうち、下流に流していかない分を保持するフィールド
+  remaining = ''
+  constructor(options) {
+    // push()にオブジェクトを渡せるようにする
+    super({ readableObjectMode: true, ...options })
+  }
+
+  _transform(chunk, encoding, callback) {
+    console.log('_transform()')
+    const lines = (chunk + this.remaining).split(/\n/)
+
+    // 最後の行は次に入ってくるデータの戦闘と同じ行になるため、変数に保持
+    this.remaining = lines.pop()
+    for(const line of lines) {
+      // ここではpush()の戻り値は気にしない
+      this.push({ message: line, delay: line.length * 100})
+    }
+    callback()
+  }
+
+  _flush(callback) {
+    console.log('_flush()')
+
+    // 
+    this.push({
+      message: this.remaining,
+      delay: this.remaining.length * 100
+    })
+    callback()
+  }
+}
+
+const lineTransformStream = new LineTransformStream()
+lineTransformStream.on('readable', () => {
+  let chunck
+  while((chunk = lineTransformStream.read()) !== null ) {
+    console.log(chunk)
+  }
+})
+
