@@ -397,3 +397,12 @@ lineTransformStream.on('readable', () => {
   }
 })
 
+lineTransformStream.write('foo\nbar')
+lineTransformStream.write('baz')
+lineTransformStream.end()
+
+// pipe()によるストリームの連結
+new HelloReadableStream()
+  .pipe(new LineTransformStream())
+  .pipe(new DelayLogStream())
+  .on('finish', () => (console.log('pipe処理完了')))
