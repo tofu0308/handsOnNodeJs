@@ -406,3 +406,32 @@ new HelloReadableStream()
   .pipe(new LineTransformStream())
   .pipe(new DelayLogStream())
   .on('finish', () => (console.log('pipe処理完了')))
+
+// 各ストリームがデータを保持できない条件を設定
+new HelloReadableStream({highWaterMark: 0})
+  .pipe(new LineTransformStream(
+    // 二重ストリームのhighWaterMarkはwriteとreadそれぞれで必要
+    {
+      wraitableHighWaterMark: 0,
+      readableHighWaterMark: 0
+    }
+  ))
+  .pipe(new DelayLogStream({highWaterMark: 0}))
+  .on('finish', () => (console.log('pipe処理完了（highWaterMark）')))
+
+
+const ltStream = new LineTransformStream()
+ltStream === new HelloReadableStream().pipe(ltStream)
+
+// ストリームの分岐
+fs.writeFileSync('srcPipe.txt', 'pipe')
+const srcReadStream = fs.createReadStream('srcPipe.txt')
+
+srcReadStream
+  .pipe(fs.createWriteStream('destPipe.txt'))
+  .on('finish', () => console.log('分岐1完了'))
+
+srcReadStream
+  .pipe(crypto.createHash('sha256'))
+  .pipe(fs.createWriteStream('destPipe.crypto.txt'))
+  .on('finish', () => console.log('分岐2完了'))
