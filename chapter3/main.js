@@ -178,6 +178,7 @@ new FizzBuzzEventEmitter()
 
 // コールバックパターン形式でイベントリスナを登録
 const http = require('http')
+const { util } = require('node-forge')
 const { fstat } = require('node:fs')
 const { Stream } = require('node:stream')
 const { Z_STREAM_END } = require('node:zlib')
@@ -435,3 +436,30 @@ srcReadStream
   .pipe(crypto.createHash('sha256'))
   .pipe(fs.createWriteStream('destPipe.crypto.txt'))
   .on('finish', () => console.log('分岐2完了'))
+
+// エラーハンドリングとstream.pipeline()
+// それぞれのストリームに対してErrorイベントリスナを登録するパターン（冗長になる）
+fs.createReadStream('no-such-file.txt')
+  .on('error', err => console.log('エラーイベント', err.message))
+  .pipe(fs.createWriteStream('dest-no-such-file.txt'))
+  .on('error', err => console.log('エラーイベント', err.message))
+
+// stream.pipeline()
+stream.pipeline(
+  // pipe()したい2つ以上のストリーム
+  fs.createReadStream('no-such-file.txt'),
+  fs.createWriteStream('dest-no-such-file.txt'),
+  // callback
+  (err) => { err ? console.error('Error発生', err.message) : console.log('正常終了') }
+)
+
+// util.promisify() によるPromise化
+try {
+  await util.promisify(stream.pipeline())(
+    fs.createReadStream('no-such-file.txt'),
+    fs.createWriteStream('dest-no-such-file.txt')
+  )
+  console.log('正常終了')
+} catch(err) {
+  console.error('Error発生', err.message)
+}
