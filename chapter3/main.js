@@ -475,3 +475,40 @@ stream.finished(
 await util.promisify(stream.finished)(
   fs.createReadStream('src.txt').on('data', () => {})
 ).then(() => console.log('正常終了'), err => console.error(err.message))
+
+// 読み込みストリームとasyncイテラブルの互換性
+const helloReadableStream1 = new HelloReadableStream()
+  .on('end', () => console.log('完了'))
+for await (const data of helloReadableStream1) {
+  console.log('data', data.toString())
+}
+
+const helloReadableStream2 = new HelloReadableStream({highWaterMark: 0})
+  .on('end', () => console.log('完了'))
+
+for await (const data of helloReadableStream2) {
+  await new Promise(resolve => setTimeout(resolve, 100))
+  console.log('data', data.toString())
+}
+
+// ジェネレータ関数
+async function* asyncGenerator() {
+  let i = 0
+  while( i <= 3) {
+    await new Promise(resolve => setTimeout(resolve, 100))
+    // 読み込みストリームとして利用するため数値は使えない
+    yield `${i++}`
+  }
+}
+
+// asyncジェネレータ関数からasyncいてラブルを生成
+const asyncIterable = asyncGenerator()
+
+// asyncいてラブルから読み込みストリームを生成
+const readableFormAsyncIterable = stream.Readable.from(asyncIterable)
+readableFormAsyncIterable.on('data', console.log)
+
+util.promisify(stream.pipeline)(
+  asyncGenerator(),
+  fs.createWriteStream('dest.txt') // ↑のジェネレータ関数と実行するとdest.txtに0123と書き込まれる
+)
