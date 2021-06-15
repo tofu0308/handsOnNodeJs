@@ -512,3 +512,28 @@ util.promisify(stream.pipeline)(
   asyncGenerator(),
   fs.createWriteStream('dest.txt') // ↑のジェネレータ関数と実行するとdest.txtに0123と書き込まれる
 )
+
+// 練習問題
+// 3-1
+/**
+ * events.on()の引数に渡したEventEmitterインスタンスがerrorイベントを発行した場合、
+ * 生成されたasyncイテラブルがfor await...ofループでエラーを投げ、リスな登録が解除されることを確認
+ * 
+ */
+const onEventEmitter = new events.EventEmitter()
+const onAsyncIterable = events.on(onEventEmitter, 'eventA')
+
+// リスナが一つ登録されていることを確認
+onEventEmitter.listeners('eventA')
+
+(async() => {
+  for await(const a of onAsyncIterable) {
+    // 何もしない
+  }
+})().catch(err => console.error('for...await of でError', err))
+
+onEventEmitter.emit('error', new Error('エラー'))
+
+// リスナの登録が解除サれていることを確認
+onEventEmitter.listeners('eventA')
+
