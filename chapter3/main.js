@@ -179,7 +179,7 @@ new FizzBuzzEventEmitter()
 // コールバックパターン形式でイベントリスナを登録
 const http = require('http')
 const { util } = require('node-forge')
-const { fstat } = require('node:fs')
+const { fstat, createWriteStream } = require('node:fs')
 const { Stream } = require('node:stream')
 const { Z_STREAM_END } = require('node:zlib')
 
@@ -548,3 +548,19 @@ const onceEventEmitter = new events.EventEmitter()
 const onecePromise = events.once(onceEventEmitter, 'eventB')
 onecePromise.catch(err => console.error('Promiseインスタンスの拒否', err))
 onceEventEmitter.emit('error', new Error('エラー'))
+
+// 3-3
+/**
+ * stream.Readble.from() でイテラブルから読み込みストリームを作れることを利用して、
+ * HelloReadableStream（290行目付近）と同様の読み込みストリームをジェネレータ関数を使って実装
+ */
+
+
+function* helloGenerator() {
+  for(const language of ['JavaScript', 'Pyton', 'Java', 'C#']) {
+    yield `Hello, ${language}!\n`
+  }
+}
+
+const helloReadableStreamFromGenerator = stream.Readable.from(helloGenerator())
+helloReadableStreamFromGenerator.pipe(fs.createWriteStream('dest3-3.txt'))
