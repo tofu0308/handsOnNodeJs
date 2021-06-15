@@ -537,3 +537,14 @@ onEventEmitter.emit('error', new Error('エラー'))
 // リスナの登録が解除サれていることを確認
 onEventEmitter.listeners('eventA')
 
+
+// 3-2
+/**
+ * events.on()の引数に渡したEventEmitterインスタンスがerrorイベントを発行した場合、
+ * 生成されるPromiseインスタンスが拒否されることを確認
+ */
+
+const onceEventEmitter = new events.EventEmitter()
+const onecePromise = events.once(onceEventEmitter, 'eventB')
+onecePromise.catch(err => console.error('Promiseインスタンスの拒否', err))
+onceEventEmitter.emit('error', new Error('エラー'))
