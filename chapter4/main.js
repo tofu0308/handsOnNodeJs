@@ -79,3 +79,24 @@ useMaybeTransfer(true)
 useMaybeTransfer(false)
 
 
+// スレッド間での値の共有
+// 1024bytesのSharedArrayBufferを生成
+const sharedArrayBuffer = new SharedArrayBuffer(1024)
+
+// Unit8Arrayのビューを生成
+const unit8Array = new Uint8Array(sharedArrayBuffer)
+
+// Int32Arrayのビューを生成
+const int32Array = new Int32Array(sharedArrayBuffer)
+
+// 配列の長さを確認
+// 1024バイトには8ビットの値が1024個入る
+unit8Array.length
+// 1024バイトには32ビットの値が256個入る
+int32Array.length
+
+// int32Arrayの値の更新
+int32Array[0] = 1000
+
+// unit8Arrayの値の確認
+unit8Array.slice(0, 4)

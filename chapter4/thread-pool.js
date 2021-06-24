@@ -1,6 +1,4 @@
 'use strict'
-const { worker } = require('node:cluster')
-const { resolve } = require('node:dns')
 const {Worker} = require('worker_threads')
 
 module.exports = class ThreadPool {
@@ -27,7 +25,7 @@ module.exports = class ThreadPool {
   }
 
   // 実際にスレッドで処理を実行するprivateメソッド
-  #process(worker, {worker, arg}) {
+  #process(worker, {resolve, arg}) {
     worker.once('message', result => {
       // リクエストを元に結果を返す
       resolve(result)
