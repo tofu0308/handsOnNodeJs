@@ -46,3 +46,7 @@ http.request(
 
 // server停止
 server.close()
+
+// URL API
+new URL('/api/todos?completed=true', 'http://localhost:3000')
+_.searchParams.get('completed')
