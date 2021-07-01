@@ -64,3 +64,5 @@ await fetch('http://localhost:3000/api/todos')
 console.log(_.status, await _.json())
 
 // 存在しないパスへのリクエスト
+await fetch('http://localhost:3000/api/foo')
+console.log(_.status, await _.text())
