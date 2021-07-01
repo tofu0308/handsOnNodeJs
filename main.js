@@ -50,3 +50,17 @@ server.close()
 // URL API
 new URL('/api/todos?completed=true', 'http://localhost:3000')
 _.searchParams.get('completed')
+
+
+/* 
+isomorphic-fetch の動作確認
+node --experimental-repl-await
+*/
+
+require('isomorphic-fetch')
+fetch
+// 要todoアプリ起動
+await fetch('http://localhost:3000/api/todos')
+console.log(_.status, await _.json())
+
+// 存在しないパスへのリクエスト
