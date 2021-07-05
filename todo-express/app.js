@@ -86,4 +86,16 @@ await fetch('http://localhost:3000/api/todos', {method: 'POST'})
 */
 
 
+// Next.jsによるルーティング処理のための追加
+const next = require('next')
+const dev = process.env.NODE_ENV !== 'production'
+const nextApp = next({dev})
 
+nextApp.prepare().then(
+  // pageディレクトリ内の各Reactコンポーネントに対するサーバーサイドルーティング
+  () => app.get('*', nextApp.getRequestHandler()),
+  err => {
+    console.error(err)
+    process.exit(1)
+  }
+)
