@@ -41,6 +41,39 @@ app.post('/api/todos', (req, res, next) => {
   res.status(201).json(todo)
 }) 
 
+// 指定されたIDのToDoを取得するためのミドルウェア(練習問題5-1)
+　app.use('/api/todos/:id(\\d+)', (req, res, next) => {
+  const targetId = Number(req.params.id)
+  const todo = todos.find(todo => todo.id === targetId)
+
+  if(!todo) {
+    const err = new Error('ToDo not found.')
+    err.statusCode = 404
+    return next(err)
+  }
+
+  req.todo = todo
+  next()
+})
+
+// ToDoのCompletedの設定、解除(練習問題5-2)
+app.route('/api/todos/:id(\\d+)/completed')
+  .put((req, res) => {
+    req.todo.completed = true
+    res.json(req.todo)
+  })
+  .delete((req, res) => {
+    req.todo.completed = false
+    res.json(req.todo)
+  })
+
+// ToDoの削除(練習問題5-3)
+app.delete('/api/todos/:id(\\d+)', (req, res) => {
+  todos = todos.filter((todo => todo !== req.todo ))
+  res.status(204).end() // 中身を指定せずにend()でレスポンスを完了することで、空のレスポンスを返す
+})
+
+
 // エラーハンドリングミドルウェア
 app.use((err, req, res, next) => {
   console.error(err)
@@ -84,6 +117,36 @@ console.log(_.status, await _.json())
 // エラーハンドリングが機能していることを確認
 await fetch('http://localhost:3000/api/todos', {method: 'POST'})
 */
+
+/**
+練習問題の動作確認用コード
+
+node --experimental-repl-await
+require('isomorphic-fetch')
+const baseUrl = 'http://localhost:3000/api/todos'
+
+// 初期のTodo一覧確認
+await fetch(baseUrl)
+console.log(_.status, await _.text())
+
+// ID1のToDoを完了させる
+await fetch(`${baseUrl}/1/completed`, {method: 'PUT'})
+console.log(_.status, await _.text())
+
+// 更新後のToDo一覧の確認
+await fetch(baseUrl).then(res => res.json())
+
+// ID2 完了状態の解除
+await fetch(`${baseUrl}/2/completed`, {method: 'DELETE'})
+console.log(_.status, await _.text())
+await fetch(baseUrl).then(res => res.json())
+
+// ID1のToDoを削除
+await fetch(`${baseUrl}/1`, {method: 'DELETE'}).then(res => res.status)
+await fetch(baseUrl).then(res => res.json())
+*/
+
+
 
 
 // Next.jsによるルーティング処理のための追加
