@@ -20,6 +20,43 @@ app.get('/api/todos', (req, res) => {
   res.json(todos.filter(todo => todo.completed === completed))
 })
 
+// 全クライアントに対するSSE送信関数を保持する配列
+let sseSenders = []
+// SSEのIDを管理するための変数
+let sseId = 1;
+
+// ToDo一覧の取得（SSE）
+app.get('/api/todos/events', (req, res) => {
+  // タイムアウトを抑止
+  // req.socket.setTimeout(0)
+  // 動作確認のため1秒にする
+  req.socket.setTimeout(1000)
+  res.set({
+    // Content-TypeでSSEであることを示す
+    'Content-Type': 'text/event-stream'
+  });
+
+  // クライアントにSSEを送信する関数を作成して登録
+  const send = (id, data) => res.write(`id: ${id}\ndata: ${data}\n\n`)
+  sseSenders.push(send)
+
+  // リクエスト発生時点の状態を送信
+  send(sseId, JSON.stringify(todos))
+
+  // リクエストがクローズされたらレスポンスを終了してSSE送信関数を配列から削除
+  req.on('close', () => {
+    res.end()
+    sseSenders = sseSenders.filter(_send => _send !== send)
+  })
+});
+
+// ToDoの更新に伴い、全クライアントに対してSSEを送信する
+function onUpdateTodos() {
+  sseId += 1
+  const data = JSON.stringify(todos)
+  sseSenders.forEach(send => send(sseId, data));
+}
+
 // ToDoのIDの値を管理するための変数
 let id = 2
 
@@ -39,6 +76,8 @@ app.post('/api/todos', (req, res, next) => {
 
   // ステータスコード201（Created）で結果を返す
   res.status(201).json(todo)
+
+  onUpdateTodos();
 }) 
 
 // 指定されたIDのToDoを取得するためのミドルウェア(練習問題5-1)
@@ -85,66 +124,22 @@ app.listen(3000)
 /**
 動作確認用コード
 
-// フィルタリングの確認
-node --experimental-repl-await
-require('isomorphic-fetch')
-
-await fetch('http://localhost:3000/api/todos?completed=true')
-console.log(_.status, await _.json())
-
-await fetch('http://localhost:3000/api/todos?completed=false')
-console.log(_.status, await _.json())
-*/
-
-/**
-// fetch()でPOSTリクエストを送信
 node --experimental-repl-await
 require('isomorphic-fetch')
 
 await fetch('http://localhost:3000/api/todos', {
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   },
   body: JSON.stringify({title: 'ペン入れ'})
 })
 
-console.log(_.status, await _.json())
 
-await fetch('http://localhost:3000/api/todos')
-console.log(_.status, await _.json())
-
-// エラーハンドリングが機能していることを確認
-await fetch('http://localhost:3000/api/todos', {method: 'POST'})
+console.log(_.status, await _.text())
 */
 
-/**
-練習問題の動作確認用コード
 
-node --experimental-repl-await
-require('isomorphic-fetch')
-const baseUrl = 'http://localhost:3000/api/todos'
-
-// 初期のTodo一覧確認
-await fetch(baseUrl)
-console.log(_.status, await _.text())
-
-// ID1のToDoを完了させる
-await fetch(`${baseUrl}/1/completed`, {method: 'PUT'})
-console.log(_.status, await _.text())
-
-// 更新後のToDo一覧の確認
-await fetch(baseUrl).then(res => res.json())
-
-// ID2 完了状態の解除
-await fetch(`${baseUrl}/2/completed`, {method: 'DELETE'})
-console.log(_.status, await _.text())
-await fetch(baseUrl).then(res => res.json())
-
-// ID1のToDoを削除
-await fetch(`${baseUrl}/1`, {method: 'DELETE'}).then(res => res.status)
-await fetch(baseUrl).then(res => res.json())
-*/
 
 
 
