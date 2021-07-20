@@ -100,16 +100,19 @@ app.route('/api/todos/:id(\\d+)/completed')
   .put((req, res) => {
     req.todo.completed = true
     res.json(req.todo)
+    onUpdateTodos()
   })
   .delete((req, res) => {
     req.todo.completed = false
     res.json(req.todo)
+    onUpdateTodos()
   })
 
 // ToDoの削除(練習問題5-3)
 app.delete('/api/todos/:id(\\d+)', (req, res) => {
   todos = todos.filter((todo => todo !== req.todo ))
   res.status(204).end() // 中身を指定せずにend()でレスポンスを完了することで、空のレスポンスを返す
+  onUpdateTodos()
 })
 
 
