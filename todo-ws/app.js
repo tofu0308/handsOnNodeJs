@@ -46,6 +46,7 @@ nextApp.prepare().then(
       // socket.emit('todos', todos)
       socket.send(JSON.stringify(todos))
 
+      /*
       // 接続したクライアントからの各種イベントに対応
       socket
         // ToDo作成
@@ -72,6 +73,37 @@ nextApp.prepare().then(
             todos = todos.filter(todo => todo.id !== id)
             ioTodos.emit('todos', todos)
           })
+        */
+
+      socket.on('message', message => {
+        const {type, data} = JSON.parse(message)
+        switch(type) {
+          // TODO作成
+          case 'createTdo': {
+            const title = data
+            if(typeof title !== 'string' || !title) return
+
+            const todo = {id: id+=1, title, completed: false}
+            todos.push(todo)
+            return sendTodosToOpenClient()
+          }
+
+          // ToDoのCompletedの更新
+          case 'updateCompleted': {
+            const {id, completed} =data
+            todos = todos.map(todo =>  todo.id === id ? {...todo, completed} : todo )
+            return sendTodosToOpenClient()
+          }
+
+          // ToDoの削除
+          case 'deleteTodo': {
+            const id = data
+            todos = todos.filter(todo=> todo.id !== id)
+            return sendTodosToOpenClient()
+          }
+
+        }
+      })
     })
   },
   (err) => {
