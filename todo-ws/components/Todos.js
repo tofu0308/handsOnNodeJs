@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
+
 
 // 各ページに関する情報の定義
 const pages = {
@@ -25,8 +26,12 @@ export default function Todos(props) {
 
   useEffect(() => {
     // socketの生成
-    const socket = io('/todos')
-    socket.on('todos', todos => {
+    // const socket = io('/todos')
+    const socket = new WebSocket('ws://localhost:3000')
+
+    // socket.on('todos', todos => {
+    socket.addEventListener('message', message => {
+      const todos = JSON.parse(message.data)
       setTodos(
         typeof completed === 'undefined'
           ? todos
@@ -48,13 +53,16 @@ export default function Todos(props) {
       <label>
         新しいTodoを入力
         <input onKeyPress={e => {
+          // 接続状態のチェック
+          if(socket.readyState !== WebSocket.OPEN) return
+          
           // Enterキーが押されたらToDoを登録する
           const title = e.target.value
           if (e.key !== 'Enter' || !title) {
             return
           }
           e.target.value = ''
-          socket.emit('createTodo', title)
+          socket.send(JSON.stringify({type: 'createTodo', data: title}))
         }}/>
       </label>
       {/* ToDo一覧 */}
@@ -66,12 +74,22 @@ export default function Todos(props) {
                 type="checkbox"
                 checked={completed}
                 onChange={e =>
-                  socket.emit('updateCompleted', id, e.target.checked)
+                  socket.readyState === WebSocket.OPEN &&
+                  socket.send(JSON.stringify({
+                    type: 'updateCompleted',
+                    data: { id, completed: e.target.checked }
+                  }))
                 }
               />
               {title}
             </label>
-            <button onClick={() => socket.emit('deleteTodo', id)}>削除</button>
+            <button onClick={() =>
+               socket.readyState === WebSocket.OPEN &&
+               socket.send(JSON.stringify({type: 'deleteTodo', data: id}))
+              }
+            >
+              削除
+            </button>
           </li>
         )}
       </ul>

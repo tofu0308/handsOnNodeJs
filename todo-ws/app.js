@@ -3,7 +3,7 @@
 const http = require('http')
 const next = require('next')
 // const Server = require('socket.io')
-const Websocket = require('ws')
+const WebSocket = require('ws')
 
 let todos = [
   {id: 1, title: 'ネーム', completed:false},
@@ -79,7 +79,7 @@ nextApp.prepare().then(
         const {type, data} = JSON.parse(message)
         switch(type) {
           // TODO作成
-          case 'createTdo': {
+          case 'createTodo': {
             const title = data
             if(typeof title !== 'string' || !title) return
 
