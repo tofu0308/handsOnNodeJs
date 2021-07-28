@@ -23,12 +23,12 @@ app.post('/api/todos', (req, res, next) => {
   const { title } = req.body
 
   if(typeof title !== 'string' || !title) {
-    // titileがリクエストに含まれない場合はステータスコード400
+    // titleがリクエストに含まれない場合はステータスコード400
     const err = new Error('title is required')
     err.statusCode = 400
     return next(err)
   }
-  const todo = {id: uuidv4() /* uuidの生成 */, titile, completed: false}
+  const todo = {id: uuidv4() /* uuidの生成 */, title, completed: false}
   dataStorage.create(todo).then(() => res.status(201).json(todo), next)
 })
 
