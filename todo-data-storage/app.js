@@ -7,7 +7,7 @@ const dataStorage = require(`./${process.env.npm_lifecycle_event}`)
 
 const app = express()
 
-app.use(express.json)
+app.use(express.json())
 
 // ToDo一覧の取得
 app.get('/api/todos', (req, res, next) => {
@@ -20,7 +20,7 @@ app.get('/api/todos', (req, res, next) => {
 
 // ToDoの新規登録
 app.post('/api/todos', (req, res, next) => {
-  const {title} = req.body
+  const { title } = req.body
 
   if(typeof title !== 'string' || !title) {
     // titileがリクエストに含まれない場合はステータスコード400
