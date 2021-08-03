@@ -71,7 +71,8 @@ for(const title of ['ネーム', '下書き']) {
 await fetch(baseUrl).then(res => res.json())
 
 // 1件目のTodoをcompletedに
-await fetch(`${baseUrl}/${_[0].id}/completed`, { method: 'PUT' })
+await fetch(`${baseUrl}/${_[0].id}/completed`, { method: 'PUT' }) 
+
 
 // ToDo一覧の再取得(変更の確認)
 await fetch(baseUrl).then(res => res.json())
