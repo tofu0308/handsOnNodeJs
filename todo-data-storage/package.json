@@ -9,6 +9,9 @@
     "sqlite": "node app",
     "leveldb": "node app"
   },
+  "mocha": {
+    "spec": "test/mocha/**/*.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
