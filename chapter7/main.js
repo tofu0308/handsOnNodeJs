@@ -1,4 +1,7 @@
 // 練習問題7-1
+
+const { get } = require("http")
+
 // 第一引数にファイル名、第二引数にToDoの配列を取り、ToDoの配列をcsv形式でファイルに保存する関数
 function writeTodosToCsv(file, todos) { 
   return fs.promises.writeFile(file, `id,title,completed\n${todos.map( 
@@ -37,3 +40,65 @@ async function parseTodosFromCsv(file) {
 }
 
 await parseTodosFromCsv('todos.csv')
+
+// 練習問題7-3
+// update()メソッドを静的プレースホルダで実装する
+
+// statement.run()をPromise化する関数
+function promisifyStatementRun(statement) {
+  return function() {
+    return new Promise((resolve, reject) => 
+      statement.run.apply(statement, [
+        ...arguments,
+        function(err) {
+          err ? reject(err) : resolve(this)
+        }
+      ])
+    )
+  }
+}
+
+const statementRuns = {
+  // titleとcompletedの両方を更新するUPDATE文
+  both: promisifyStatementRun(
+    db.prepare('UPDATE todo SET title = ?, completed = ? WHERE id = ?')
+  ),
+  // titleのみ更新するUPDATE文
+  title: promisifyStatementRun(
+    db.prepare("UPDATE todo SET title = ? WHERE id =?")
+  ),
+  // completedのみ更新するUPDATE文
+  completed: promisifyStatementRun(
+    db.prepare("UPDATE todo SET completed = ? WHERE id =?")
+  )
+}
+
+// SELECT文
+const selectStatement = db.prepare('SELECT * FROM todo WHERE id = ?')
+const selectStatementGet = promisify(
+  selectStatement.get.bind(selectSattement)
+)
+
+// updateの実装
+exports.update = (id, update) => {
+  let updateStatementRun, values
+  if(update.title && update.completed) {
+    updateStatementRun = updateStatementRun.both
+    values = [update.title, update.completed, id]
+  } else if(update.title) {
+    updateStatementRun.title
+    values = [update.title, id]
+  } else if(update.completed) {
+    updateStatementRun.completed
+    values = [update.completed, id]
+  } else {
+    return Promise.reject(
+      new Error('`update`, should contain title and/or completed')
+    )
+  }
+  return updateStatementRun(values)
+  .then(({ changes }) => changes === 1
+    ? selectStatementGet(id).then(rowToTodo)
+    : null
+  )
+}
