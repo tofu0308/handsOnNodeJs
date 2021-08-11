@@ -61,7 +61,7 @@ db.get(`todo:${id}`).then(
 
 exports.remove = id =>
   db.get(`todo:${id}`).then(
-    content => db.batch
+    content => db.batch()
       .del(`todo:${id}`)
       .del(`todo-completed-true:${id}`)
       .del(`todo-completed-false:${id}`)
