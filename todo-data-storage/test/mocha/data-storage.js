@@ -33,5 +33,29 @@ for (const dataStorageName of ['file-system', 'sqlite', 'leveldb']) {
         assert.sameDeepMembers(await fetchAll(), [todo1, todo2, todo3])
       })
     })
+
+    describe('fetchByCompleted()', () => {
+      it('completedの値が引数で指定したものと等しいToDoだけを取得できる',
+      async() => {
+        // 初期状態の確認
+        assert.deepEqual(await fetchByCompleted(true), [])
+        assert.deepEqual(await fetchByCompleted(false), [])
+
+        // ToDoを3件追加
+        const todo1 = { id: 'a', title: 'ネーム', completed: false }
+        await create(todo1)
+        const todo2 = { id: 'b', title: '下書き', completed: true }
+        await create(todo2)
+        const todo3 = { id: 'c', title: 'ペン入れ', completed: false }
+        await create(todo3)
+
+        // fetchByCompletedの結果を確認
+        assert.deepEqual(await fetchByCompleted(true), [todo2])
+        assert.sameDeepMembers(
+          await fetchByCompleted(false),
+          [todo1, todo3]
+        )
+      })
+    })
   })
 }
