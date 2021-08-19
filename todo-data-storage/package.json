@@ -12,6 +12,11 @@
   "mocha": {
     "spec": "test/mocha/**/*.js"
   },
+  "jest": {
+    "testMatch": ["**/test/jest/**/*.js"],
+    "clearMocks":true,
+    "retoreMocks": true
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
