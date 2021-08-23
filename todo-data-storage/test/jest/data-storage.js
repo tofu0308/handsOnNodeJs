@@ -54,10 +54,44 @@ for(const dataStorageName of ['file-system', 'sqlite', 'leveldb']) {
           // fetchByCompleted()の結果を確認
           expect(await fetchByCompleted(true)).toEqual([todo2])
           expect(await fetchByCompleted(false)).toEqual([todo1, todo3])
-
-
         }
       )
     })
+
+    describe('update()', () => {
+      const todo1 = { id: 'a', title: 'ネーム', completed: false }
+      const todo2 = { id: 'b', title: '下書き', completed: false }
+
+      beforeEach(async () => {
+        await create(todo1)
+        await create(todo2)
+      })
+  
+      test('指定したIDのToDoを更新し、更新後のToDoを返す', async () => {
+        // todo1のcompletedを更新
+        expect(await update('a', { completed: true }))
+          .toEqual({ id: 'a', title: 'ネーム', completed: true })
+        expect(await fetchByCompleted(true))
+          .toEqual([{ id: 'a', title: 'ネーム', completed: true }])
+        expect(await fetchByCompleted(false)).toEqual([todo2])
+        
+        // todo2のcompletedを更新
+        expect(await update('b', {title: 'ペン入れ'}))
+          .toEqual({id: 'b', title: 'ペン入れ', completed: false})
+        expect(await fetchByCompleted(true))
+          .toEqual([{ id: 'a', title: 'ネーム', completed: true }])
+          expect(await fetchByCompleted(false))
+            .toEqual([{id: 'b', title: 'ペン入れ', completed: false}])
+      })
+
+      test('存在しないIDを指定するとnullを返す', async () => {
+        expect(await update('c', { completed: true})).toBeNull
+        expect(await fetchByCompleted(true)).toEqual([])
+        expect(sortTodoById(await fetchByCompleted(false)))
+          .toEqual([todo1, todo2])
+      })
+    })
+
+    
   })
 }
