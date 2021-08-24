@@ -65,3 +65,44 @@ JSON.parse('{ "foo" : 1 }')
 JSON.parse('{ "foo" : 1 }')
 
 sinon.restore()
+
+
+// JestのテストダブルのAPI
+const jest = require('jest-mock')
+const expect = require('expect')
+const exp = require('constants')
+
+//jest.spyOn()
+// console.log()に対するモックを生成
+jest.spyOn(console, 'log')
+console.log('foo')
+
+// 正しいアサーション
+expect(console.log).toHaveBeenCalledWith('foo')
+expect(console.log).toHaveBeenCalledTimes(1)
+// 誤ったアサーション
+expect(console.log).toHaveBeenCalledWith('bar')
+expect(console.log).toHaveBeenCalledTimes(2)
+// 固定値を返す
+console.log.mockReturnValue(true)
+console.log('foo')
+// 代替実装を関数（ここでは第一引数に第2引数を足す）で定義
+console.log.mockImplementation((arg1, arg2) => arg1 + arg2)
+console.log('foo', 'bar')
+
+// jest.fn()
+// 実装のないモック
+const emptyMock = jest.fn()
+// モックの実行
+emptyMock(10, 20)
+// アサーション
+expect(emptyMock).toHaveBeenCalledTimes(1)
+
+// 実装の定義されたモック
+const mulutiplyMock = jest.fn((a, b) => a * b)
+mulutiplyMock(10, 20)
+// アサーション
+expect(mulutiplyMock).toHaveBeenCalledTimes(1)
+
+// jest.spyOn() で振る舞いを変化させてしまった関数をもとに戻す
+jest.restoreAllMocks() 
