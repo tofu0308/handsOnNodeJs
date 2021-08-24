@@ -92,7 +92,7 @@ for(const dataStorageName of ['file-system', 'sqlite', 'leveldb']) {
       })
     })
 
-    describe('remove()', async () => {
+    describe('remove()', () => {
       const todo1 = { id: 'a', title: 'ネーム', completed: false }
       const todo2 = { id: 'b', title: '下書き', completed: false }
 
@@ -102,7 +102,7 @@ for(const dataStorageName of ['file-system', 'sqlite', 'leveldb']) {
       })
 
       test('指定したIDのToDoを削除する', async () => {
-        expect(await remove('b')).tobe('b')
+        expect(await remove('b')).toBe('b')
         expect(await fetchAll()).toEqual([todo1])
       })
 
