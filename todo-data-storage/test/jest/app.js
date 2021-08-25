@@ -45,5 +45,47 @@ describe('app', () => {
         expect(res.body).toEqual({error: 'fetchAll()失敗'})
       })
     })
+    describe('completedが指定されている場合', () => {
+      test(
+        'completedを引数にfetchByCompleted()を実行し取得したToDoの配列を返す',
+        async () => {
+          const todos = [
+            { id: 'a', title: 'ネーム', completed: false },
+            { id: 'b', title: '下書き', completed: true }
+          ]
+
+          // モックが返す値の指定
+          fileSystem.fetchByCompleted.mockResolvedValue(todos)
+
+          for(const completed of [true, false]) {
+            // リクエストの送信
+            const res = await request(app)
+              .get('/api/todos')
+              .query({completed})
+
+            // レスポンスのアサーション
+            expect(res.statusCode).toBe(200)
+            expect(res.body).toEqual(todos)
+
+            // fetchByCompleted()の引数のアサーション
+            expect(fileSystem.fetchByCompleted).toHaveBeenCalledWith(completed)
+          }
+        }
+      )
+      test('fetchByCompleted()が失敗したらエラーを返す', async () => {
+        // モックが返す値の指定
+        fileSystem.fetchByCompleted.mockRejectedValue(new Error('fetchByCompleted()失敗'))
+
+        // リクエストの送信
+        const res = await request(app)
+          .get('/api/todos')
+          .query({completed: true})
+
+          // レスポンスのアサーション
+        expect(res.statusCode).toBe(500)
+        expect(res.body).toEqual({ error: 'fetchByCompleted()失敗' })
+      })
+
+    })
   })
 })
