@@ -88,4 +88,47 @@ describe('app', () => {
 
     })
   })
+
+  describe('POST /api/todos', () => {
+    test(
+      'パラメータに指定したタイトルを引数にcreate()を実行し、結果を返す',
+      async () => {
+        // uuid.v4が返す値を指定
+        uuid.v4.mockReturnValue('a')
+        // モックで値のないPromiseを返す
+        fileSystem.create.mockResolvedValue()
+
+        // リクエストの送信
+        const res = await request(app)
+          .post('/api/todos')
+          .send({ title: 'ネーム'})
+
+        // レスポンスのアサーション
+        const expectedTodo = { id: 'a', title: 'ネーム', completed: false }
+        expect(res.statusCode).toBe(201)
+        expect(res.body).toEqual(expectedTodo)
+        // create()の引数のアサーション
+        expect(fileSystem.create).toHaveBeenCalledWith(expectedTodo)
+      }
+   )
+   test(
+     'パラメータにタイトルが指定されていない場合、400エラーを返す',
+     async () => {
+       for (const title of ['', undefined]) {
+          // リクエストの送信
+          const res = await request(app)
+            .post('/api/todos')
+            .send({ title })
+          
+          // レスポンスのアサーション
+          expect(res.statusCode).toBe(400)
+          expect(res.body).toEqual({ error: 'title is required' })
+
+          // create()が実行されていないことのアサーション
+          expect(fileSystem.create).not.toHaveBeenCalled()
+        }
+
+     }
+   )
+  })
 })
