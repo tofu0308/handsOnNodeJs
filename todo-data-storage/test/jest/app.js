@@ -127,8 +127,22 @@ describe('app', () => {
           // create()が実行されていないことのアサーション
           expect(fileSystem.create).not.toHaveBeenCalled()
         }
-
      }
    )
+   test(
+     'create()が失敗したらエラーを返す',
+     async () => {
+       // モックが返す値の指定
+       fileSystem.create.mockRejectedValue(new Error('create()失敗'))
+
+       // リクエストの送信
+       const res = await request(app)
+          .post('/api/todos')
+          .send({ title: 'ネーム' })
+
+        // レスポンスのアサーション
+        expect(res.statusCode).toBe(500)
+        expect(res.body).toEqual({ error: 'create()失敗' })
+     })
   })
 })
