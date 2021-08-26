@@ -155,5 +155,55 @@ describe('app', () => {
       assert.deepEqual(res.body, { error: 'create()失敗' })
     })
   })
+
+  describe('PUT /api/todos/:id/completed', () => {
+    it(
+      'パスで指定したIDのcompletedをtrueに設定し、変更後のToDoを返す',
+      async () => {
+        const todo = { id: 'a', title: 'ネーム', completed: true }
+        // スタブの生成
+        sinon.stub(fileSystem, 'update').resolves(todo)
+
+        // リクエストの送信
+        const res = await chai.request(app).put('/api/todos/a/completed')
+
+        // レスポンスのアサーション
+        assert.strictEqual(res.status, 200)
+        assert.deepEqual(res.body, todo)
+
+        // update()の引数のアサーション
+        assert.calledWith(fileSystem.update, 'a', { completed: true })
+      }
+    )
+    it(
+      'update()がnullを返したら404エラーを返す',
+      async () => {
+        // スタブの生成
+        sinon.stub(fileSystem, 'update').resolves(null)
+
+        // リクエストの送信
+        const res = await chai.request(app).put('/api/todos/a/completed')
+
+        // レスポンスのアサーション
+        assert.strictEqual(res.status, 404)
+        assert.deepEqual(res.body, { error: 'ToDo not found' })
+      }
+    )
+    it(
+      'update()が失敗したらエラーを返す',
+      async () => {
+        // スタブの生成
+        sinon.stub(fileSystem, 'update').rejects(new Error('update()失敗'))
+
+        // リクエストの送信
+        const res = await chai.request(app).put('/api/todos/a/completed')
+
+        // レスポンスのアサーション
+        assert.strictEqual(res.status, 500)
+        assert.deepEqual(res.body, { error: 'update()失敗' })
+
+      }
+    )
+  })
 })
 
