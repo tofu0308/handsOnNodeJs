@@ -242,4 +242,52 @@ describe('app', () => {
       }
     )
   })
+  describe('DELETE /api/todos/:id', () => {
+    it(
+      'パスで指定したIDびToDoを削除する',
+      async () => {
+        // スタブの生成
+        fileSystem.remove.mockResolvedValue('a')
+
+        // リクエストの送信
+        const res = await request(app).delete('/api/todos/a')
+
+        // レスポンスのアサーション
+        expect(res.status).toBe(204)
+        expect(res.body).toEqual({})
+
+        // remove()の引数のアサーション
+        expect(fileSystem.remove).toHaveBeenCalledWith('a')
+      }
+    )
+    it(
+      'remove()がnullを返したら404エラーを返す',
+      async () => {
+       // スタブの生成
+       fileSystem.remove.mockResolvedValue(null)
+
+       // リクエストの送信
+       const res = await request(app).delete('/api/todos/a')
+
+       // レスポンスのアサーション
+       expect(res.status).toBe(404)
+       expect(res.body).toEqual({ error: 'ToDo not found' })
+      }
+    )
+    it(
+      'remove()が失敗したらエラーを返す',
+      async () => {
+       // スタブの生成
+       fileSystem.remove.mockRejectedValue(new Error('remove()失敗'))
+
+       // リクエストの送信
+       const res = await request(app).delete('/api/todos/a')
+
+       // レスポンスのアサーション
+       expect(res.status).toBe(500)
+       expect(res.body).toEqual({ error: 'remove()失敗' })
+
+      }
+    )
+  })
 })

@@ -301,7 +301,6 @@ describe('app', () => {
        assert.deepEqual(res.body, { error: 'remove()失敗' })
       }
     )
-
    })
 })
 
