@@ -208,7 +208,7 @@ describe('app', () => {
 
    describe('DELETE /api/todos/:id/completed', () => {
      it(
-       'パス指定したIDの￥ToDoのcompletedをfalseに設定し、更新後のToDoを返す',
+       'パス指定したIDのToDoのcompletedをfalseに設定し、更新後のToDoを返す',
        async () => {
         const todo = { id: 'a', title: 'ネーム', completed: false }
         
