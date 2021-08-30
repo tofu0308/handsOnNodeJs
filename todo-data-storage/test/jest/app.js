@@ -194,6 +194,52 @@ describe('app', () => {
     )
   })
   describe('DELETE /api/todos/:id/completed', () => {
-    
+    it(
+      'パス指定したIDのToDoのcompletedをfalseに設定し、更新後のToDoを返す',
+      async () => {
+        const todo = { id: 'a', title: 'ネーム', completed: false }
+
+        // モックが返す値の指定
+        fileSystem.update.mockResolvedValue(todo)
+
+        // リクエストの送信
+        const res = await request(app).delete('/api/todos/a/completed')
+
+        // レスポンスのアサーション
+        expect(res.status).toBe(200)
+        expect(res.body).toEqual(todo)
+
+        // update()の引数のアサーション
+        expect(fileSystem.update).toHaveBeenCalledWith('a', { completed: false })
+      }
+    )
+    it(
+      'update()がnullを返したら404エラーを返す',
+      async () => {
+        // モックが返す値の指定
+        fileSystem.update.mockResolvedValue(null)
+
+        // リクエストの送信
+        const res = await request(app).delete('/api/todos/a/completed')
+
+        // レスポンスのアサーション
+        expect(res.status).toBe(404)
+        expect(res.body).toEqual({ error: 'ToDo not found' })
+      }
+    )
+    it(
+      'update()が失敗したらエラーを返す',
+      async () => {
+        // モックが返す値の指定
+        fileSystem.update.mockRejectedValue(new Error('update()失敗'))
+
+        // リクエストの送信
+        const res = await request(app).delete('/api/todos/a/completed')
+
+        // レスポンスのアサーション
+        expect(res.status).toBe(500)
+        expect(res.body).toEqual({ error: 'update()失敗' })
+      }
+    )
   })
 })

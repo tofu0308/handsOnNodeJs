@@ -241,7 +241,7 @@ describe('app', () => {
       }
     )
     it(
-      'update()が失敗したら404エラーを返す',
+      'update()が失敗したらエラーを返す',
       async () => {
        // スタブの生成
        sinon.stub(fileSystem, 'update').rejects(new Error('update()失敗'))
