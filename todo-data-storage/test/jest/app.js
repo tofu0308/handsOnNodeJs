@@ -193,4 +193,7 @@ describe('app', () => {
       }
     )
   })
+  describe('DELETE /api/todos/:id/completed', () => {
+    
+  })
 })
