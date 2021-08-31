@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1629899957566" clover="3.2.0">
-  <project timestamp="1629899957566" name="All files">
-    <metrics statements="117" coveredstatements="103" conditionals="32" coveredconditionals="22" methods="50" coveredmethods="45" elements="199" coveredelements="170" complexity="0" loc="117" ncloc="117" packages="4" files="4" classes="4"/>
+<coverage generated="1630329394645" clover="3.2.0">
+  <project timestamp="1630329394646" name="All files">
+    <metrics statements="117" coveredstatements="115" conditionals="32" coveredconditionals="26" methods="50" coveredmethods="49" elements="199" coveredelements="190" complexity="0" loc="117" ncloc="117" packages="4" files="4" classes="4"/>
     <package name="todo-data-storage">
-      <metrics statements="37" coveredstatements="25" conditionals="12" coveredconditionals="8" methods="11" coveredmethods="7"/>
+      <metrics statements="37" coveredstatements="37" conditionals="12" coveredconditionals="12" methods="11" coveredmethods="11"/>
       <file name="app.js" path="/Users/fujiitakeshi/workspace/handsOnNodeJs/todo-data-storage/app.js">
-        <metrics statements="37" coveredstatements="25" conditionals="12" coveredconditionals="8" methods="11" coveredmethods="7"/>
+        <metrics statements="37" coveredstatements="37" conditionals="12" coveredconditionals="12" methods="11" coveredmethods="11"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
@@ -25,23 +25,23 @@
         <line num="31" count="2" type="stmt"/>
         <line num="32" count="2" type="stmt"/>
         <line num="37" count="2" type="stmt"/>
-        <line num="38" count="0" type="stmt"/>
-        <line num="40" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="41" count="0" type="stmt"/>
-        <line num="43" count="0" type="stmt"/>
-        <line num="44" count="0" type="stmt"/>
-        <line num="45" count="0" type="stmt"/>
+        <line num="38" count="6" type="stmt"/>
+        <line num="40" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="43" count="2" type="stmt"/>
+        <line num="44" count="2" type="stmt"/>
+        <line num="45" count="2" type="stmt"/>
         <line num="50" count="1" type="stmt"/>
         <line num="55" count="1" type="stmt"/>
-        <line num="56" count="0" type="stmt"/>
-        <line num="57" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="58" count="0" type="stmt"/>
-        <line num="60" count="0" type="stmt"/>
-        <line num="61" count="0" type="stmt"/>
-        <line num="62" count="0" type="stmt"/>
+        <line num="56" count="3" type="stmt"/>
+        <line num="57" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="60" count="1" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
         <line num="67" count="1" type="stmt"/>
-        <line num="68" count="5" type="stmt"/>
-        <line num="69" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="68" count="11" type="stmt"/>
+        <line num="69" count="11" type="cond" truecount="2" falsecount="0"/>
         <line num="72" count="1" type="stmt"/>
       </file>
     </package>
