@@ -6,6 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": {
+    "name": "tofu",
+    "email": "hoge@hoge.hoge",
+    "url": "https://***.jp"
+
+  },
   "license": "ISC"
 }
