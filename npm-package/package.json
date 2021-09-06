@@ -12,5 +12,6 @@
     "url": "https://***.jp"
 
   },
-  "license": "ISC"
+  "license": "UNLICENSED",
+  "private": "true"
 }
