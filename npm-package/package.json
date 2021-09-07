@@ -10,8 +10,10 @@
     "name": "tofu",
     "email": "hoge@hoge.hoge",
     "url": "https://***.jp"
-
   },
   "license": "UNLICENSED",
-  "private": "true"
+  "private": "true",
+  "dependencies": {
+    "rimraf": "^3.0.2"
+  }
 }

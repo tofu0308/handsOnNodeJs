@@ -37,6 +37,9 @@ v3.0.0-alpha.1
 fujiitakeshi@mbp npm-package % npm version patch 
 v3.0.0
 
+// dependencies
+// install rimraf
+npm install rimraf
  */
 
 
