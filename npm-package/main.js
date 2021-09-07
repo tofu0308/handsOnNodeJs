@@ -40,6 +40,17 @@ v3.0.0
 // dependencies
 // install rimraf
 npm install rimraf
+
+// 依存関係の確認
+npm ls -all
+
+// 複数のパッケージが同一パッケージに依存しており、かつ依存バージョンの制約を同時に満たすバージョンが存在しない場合
+npm install inherits@^1.0.0
+
+npm ls -all
+
+// deduped 重複排除の意。
+
  */
 
 
