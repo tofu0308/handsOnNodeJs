@@ -51,6 +51,49 @@ npm ls -all
 
 // deduped 重複排除の意。
 
+// devDependencies
+npm install --save-dev mkdirp
+
+// scripts
+npm test
+
+npm run create-dir
+> npm-package@3.0.0 create-dir /Users/fujiitakeshi/workspace/handsOnNodeJs/npm-package
+> mkdirp foo/bar
+
+npm run remove-dir
+> npm-package@3.0.0 remove-dir /Users/fujiitakeshi/workspace/handsOnNodeJs/npm-package
+> rimraf foo
+
+// pre,postを接頭辞として設定できる
+// precreate-dir,postcreate-dir設定後
+npm run create-dir
+
+
+> npm-package@3.0.0 precreate-dir /Users/fujiitakeshi/workspace/handsOnNodeJs/npm-package
+> echo "ディレクトリを作成します"
+
+ディレクトリを作成します
+
+> npm-package@3.0.0 create-dir /Users/fujiitakeshi/workspace/handsOnNodeJs/npm-package
+> mkdirp foo/bar
+
+
+> npm-package@3.0.0 postcreate-dir /Users/fujiitakeshi/workspace/handsOnNodeJs/npm-package
+> echo "ディレクトリを作成しました"
+
+ディレクトリを作成しました
+
+// prepareを追加して実行
+npm install
+
+> npm-package@3.0.0 prepare /Users/fujiitakeshi/workspace/handsOnNodeJs/npm-package
+> echo "prepareを実行しました"
+
+prepareを実行しました
+audited 14 packages in 0.487s
+found 0 vulnerabilities
+ 
  */
 
 
