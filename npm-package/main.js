@@ -112,7 +112,9 @@ npm greeting 太郎 次郎
 ### DEBUG ###
 Hello 太郎　次郎!
 
-
+// engines
+// enginesに指定されたバージョンと一致しないパッケージバージョンをinstallしようとした場合にエラーにする
+npm config set engine-strict true
 
  */
 
