@@ -93,7 +93,27 @@ npm install
 prepareを実行しました
 audited 14 packages in 0.487s
 found 0 vulnerabilities
- 
+
+
+// bin
+another-package/　にbinを設定して実行
+npm run greeting 太郎 次郎
+
+// 以下でもOK
+npm greeting 太郎 次郎
+
+> another-package@1.0.0 greeting /Users/fujiitakeshi/workspace/handsOnNodeJs/another-package
+> greeting "太郎　次郎"
+
+### DEBUG ###
+[ '/Users/fujiitakeshi/.nvm/versions/node/v10.15.0/bin/node',
+  '/Users/fujiitakeshi/workspace/handsOnNodeJs/another-package/node_modules/.bin/greeting',
+  '太郎　次郎' ]
+### DEBUG ###
+Hello 太郎　次郎!
+
+
+
  */
 
 

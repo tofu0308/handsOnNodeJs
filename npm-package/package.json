@@ -11,6 +11,9 @@
     "remove-dir": "rimraf foo",
     "prepare": "echo \"prepareを実行しました\""
   },
+  "bin": {
+    "greeting": "./greeting.js"
+  },
   "author": {
     "name": "tofu",
     "email": "hoge@hoge.hoge",
