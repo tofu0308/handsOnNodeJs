@@ -127,6 +127,19 @@ npx: 41個のパッケージを3.951秒でインストールしました。
             (__)\       )\/\
                 ||----w |
                 ||     ||
- */
+ 
+// npmレジストリへのパッケージ公開
+
+// アカウント登録
+npm adduser
+
+Username: tofu0308
+Password: 
+Email: (this IS public) isisaka3000@gmail.com
+Logged in as tofu0308 on https://registry.npmjs.org/.
+
+
+ 
+*/
 
 
