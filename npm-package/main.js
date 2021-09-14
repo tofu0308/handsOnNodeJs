@@ -116,7 +116,7 @@ Hello 太郎　次郎!
 // enginesに指定されたバージョンと一致しないパッケージバージョンをinstallしようとした場合にエラーにする
 npm config set engine-strict true
 
-// git 
+// npmパッケージのグローバルインストールとnpx
 npx cowsay hello
 npx: 41個のパッケージを3.951秒でインストールしました。
  _______
