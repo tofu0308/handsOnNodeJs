@@ -1,6 +1,6 @@
 {
   "name": "@tofu0308/fizzbuzz",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
