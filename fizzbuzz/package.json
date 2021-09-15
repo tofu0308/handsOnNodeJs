@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node test",
-    "prePubulishOnly": "npm test"
+    "prepubulishOnly": "npm test"
   },
   "bin": "bin.js",
   "keywords": [],
