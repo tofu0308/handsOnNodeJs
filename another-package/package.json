@@ -8,7 +8,7 @@
     "greeting": "greeting"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "npm-package": "file:../npm-package"
   }
