@@ -1,0 +1,41 @@
+Arguments: 
+  /Users/fujiitakeshi/.nvm/versions/node/v14.15.5/bin/node /Users/fujiitakeshi/.nvm/versions/node/v14.15.5/bin/yarn add rimraaf
+
+PATH: 
+  /Users/fujiitakeshi/.nvm/versions/node/v14.15.5/bin:/Users/fujiitakeshi/google-cloud-sdk/bin:/Users/fujiitakeshi/.nvm/versions/node/v10.15.0/bin:/Users/fujiitakeshi/.nodebrew/current/bin:/Users/fujiitakeshi/.nvm/versions/node/v10.15.0/bin:/Users/fujiitakeshi/.nodebrew/current/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/fujiitakeshi/.nvm/versions/node/v10.15.0/bin:/Users/fujiitakeshi/.nodebrew/current/bin
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  14.15.5
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/rimraaf: Not found
+      at Request.params.callback [as _callback] (/Users/fujiitakeshi/.nvm/versions/node/v14.15.5/lib/node_modules/yarn/lib/cli.js:66988:18)
+      at Request.self.callback (/Users/fujiitakeshi/.nvm/versions/node/v14.15.5/lib/node_modules/yarn/lib/cli.js:140662:22)
+      at Request.emit (events.js:315:20)
+      at Request.<anonymous> (/Users/fujiitakeshi/.nvm/versions/node/v14.15.5/lib/node_modules/yarn/lib/cli.js:141634:10)
+      at Request.emit (events.js:315:20)
+      at IncomingMessage.<anonymous> (/Users/fujiitakeshi/.nvm/versions/node/v14.15.5/lib/node_modules/yarn/lib/cli.js:141556:12)
+      at Object.onceWrapper (events.js:421:28)
+      at IncomingMessage.emit (events.js:327:22)
+      at endReadableNT (internal/streams/readable.js:1327:12)
+      at processTicksAndRejections (internal/process/task_queues.js:80:21)
+
+npm manifest: 
+  {
+    "name": "package-a",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
